@@ -1,32 +1,30 @@
-import { useEffect, useState } from 'react'
-import { getHealth } from './api/client.js'
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
+import BackendStatus from './components/BackendStatus.jsx'
+import RegisterPage from './pages/RegisterPage.jsx'
+
+function StartPage() {
+  return <p>Willkommen bei BeBetter.</p>
+}
 
 export default function App() {
-  const [state, setState] = useState({ phase: 'loading' })
-
-  useEffect(() => {
-    getHealth()
-      .then((data) => setState({ phase: 'success', data }))
-      .catch((error) => setState({ phase: 'error', message: error.message }))
-  }, [])
-
   return (
-    <main style={{ fontFamily: 'sans-serif', padding: '2rem' }}>
-      <h1>BeBetter</h1>
+    <BrowserRouter>
+      <main style={{ fontFamily: 'sans-serif', padding: '2rem', maxWidth: 480 }}>
+        <h1>BeBetter</h1>
+        <nav style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+          <Link to="/">Start</Link>
+          <Link to="/register">Registrieren</Link>
+        </nav>
 
-      {state.phase === 'loading' && <p>Verbindung zum Backend wird geprüft …</p>}
+        <Routes>
+          <Route path="/" element={<StartPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+        </Routes>
 
-      {state.phase === 'success' && (
-        <p style={{ color: 'green' }}>
-          Backend verbunden: {state.data.message}
-        </p>
-      )}
-
-      {state.phase === 'error' && (
-        <p role="alert" style={{ color: 'crimson' }}>
-          {state.message}
-        </p>
-      )}
-    </main>
+        <footer style={{ marginTop: '2rem' }}>
+          <BackendStatus />
+        </footer>
+      </main>
+    </BrowserRouter>
   )
 }

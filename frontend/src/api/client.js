@@ -1,22 +1,44 @@
 const API_URL = import.meta.env.VITE_API_URL ?? ''
 
-export async function getHealth() {
+export class ApiError extends Error {
+  constructor(message, status, data) {
+    super(message)
+    this.status = status
+    this.data = data
+  }
+}
+
+export async function request(path, { method = 'GET', body, token } = {}) {
+  const headers = {}
+  if (body !== undefined) headers['Content-Type'] = 'application/json'
+  if (token) headers.Authorization = `Bearer ${token}`
+
   let response
   try {
-    response = await fetch(`${API_URL}/health`)
+    response = await fetch(`${API_URL}${path}`, {
+      method,
+      headers,
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    })
   } catch {
-    throw new Error('Keine Verbindung zum Backend möglich.')
+    throw new ApiError('Keine Verbindung zum Backend möglich.', 0)
   }
+
+  const data = await response.json().catch(() => null)
 
   if (!response.ok) {
-    throw new Error(
-      `Das Backend ist nicht erreichbar oder meldet einen Fehler (HTTP ${response.status}).`,
-    )
+    const message =
+      data?.message ??
+      "Das Backend ist nicht erreichbar oder meldet einen Fehler (HTTP ${response.status})."
+    throw new ApiError(message, response.status, data)
   }
+  return data
+}
 
-  const data = await response.json()
-  if (data.status !== 'ok') {
-    throw new Error('Das Backend hat eine unerwartete Antwort geschickt.')
+export async function getHealth() {
+  const data = await request('/health')
+  if (data?.status !== 'ok') {
+    throw new ApiError('Das Backend hat eine unerwartete Antwort geschickt.', 200, data)
   }
   return data
 }
