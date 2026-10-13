@@ -1,0 +1,19 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: bebetter
+      POSTGRES_USER: bebetter
+      POSTGRES_PASSWORD: bebetter
+    ports:
+      - "5432:5432"
+    volumes:
+      - bebetter-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bebetter -d bebetter"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  bebetter-db-data:
