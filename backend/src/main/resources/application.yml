@@ -1,6 +1,14 @@
 spring:
   application:
     name: bebetter-backend
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/bebetter}
+    username: ${DB_USERNAME:bebetter}
+    password: ${DB_PASSWORD:bebetter}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
 
 server:
   port: ${PORT:8080}
