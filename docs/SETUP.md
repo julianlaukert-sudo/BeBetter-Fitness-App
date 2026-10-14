@@ -44,3 +44,5 @@ Getestet unter Windows 11 mit PowerShell im IntelliJ-Terminal.
   mit einer veränderten Migration angelegt. Lokal zurücksetzen mit `docker compose down -v`
   und danach `docker compose up -d` (löscht nur lokale Übungsdaten).
   Bereits gemergte Migrationen nie ändern.
+
+- **`mvn test` schlägt mit Verbindungsfehler fehl**: Tests brauchen die laufende Datenbank. Vorher im Hauptordner `docker compose up -d` ausführen.
