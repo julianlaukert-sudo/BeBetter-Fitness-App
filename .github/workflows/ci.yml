@@ -1,3 +1,4 @@
+
 name: CI
 
 on:
@@ -12,13 +13,13 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_DB: bebetter
+          POSTGRES_DB: bebetter_test
           POSTGRES_USER: bebetter
           POSTGRES_PASSWORD: bebetter
         ports:
           - 5433:5432
         options: >-
-          --health-cmd "pg_isready -U bebetter -d bebetter"
+          --health-cmd "pg_isready -U bebetter -d bebetter_test"
           --health-interval 5s
           --health-timeout 5s
           --health-retries 10

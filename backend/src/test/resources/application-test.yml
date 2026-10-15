@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/bebetter_test
+    username: bebetter
+    password: bebetter
+JWT_SECRET: test-only-secret-at-least-thirty-two-bytes-long
