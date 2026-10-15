@@ -1,4 +1,3 @@
-
 package de.bebetter.backend.validation;
 
 import java.nio.charset.StandardCharsets;
@@ -8,7 +7,6 @@ import java.util.regex.Pattern;
 
 /**
  * Passwortregeln für die Registrierung.
- * Muss mit frontend/src/utils/validation.js übereinstimmen.
  * Die Grenze von 72 Bytes kommt von BCrypt.
  */
 public final class PasswordPolicy {
@@ -63,5 +61,11 @@ public final class PasswordPolicy {
 
     public static boolean isValid(String password) {
         return check(password).isEmpty();
+    }
+
+    // Für den Login: BCrypt verarbeitet höchstens 72 Byte
+    public static boolean exceedsByteLimit(String password) {
+        return password != null
+                && password.getBytes(StandardCharsets.UTF_8).length > MAX_BYTES;
     }
 }
