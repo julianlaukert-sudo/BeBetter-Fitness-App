@@ -25,31 +25,31 @@ public class User {
     private String email;
 
     @Column(name = "passwort_hash", nullable = false, length = 100)
-    private String passwortHash;
+    private String passwordHash;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "rolle", nullable = false, length = 10)
     private Role role;
 
     @Column(name = "registriert_am", nullable = false)
-    private OffsetDateTime registriertAm;
+    private OffsetDateTime registeredAt;
 
     protected User() {
         // für JPA
     }
 
-    public User(String name, String email, String passwortHash, Role role) {
+    public User(String name, String email, String passwordHash, Role role) {
         this.name = name;
         this.email = email;
-        this.passwortHash = passwortHash;
+        this.passwordHash = passwordHash;
         this.role = role;
-        this.registriertAm = OffsetDateTime.now();
+        this.registeredAt = OffsetDateTime.now();
     }
 
     public Long getId() { return id; }
     public String getName() { return name; }
     public String getEmail() { return email; }
-    public String getPasswortHash() { return passwortHash; }
-    public Role getRolle() { return role; }
-    public OffsetDateTime getRegistriertAm() { return registriertAm; }
+    public String getPasswordHash() { return passwordHash; }
+    public Role getRole() { return role; }
+    public OffsetDateTime getRegisteredAt() { return registeredAt; }
 }
