@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
 
+// Tabellen- und Spaltennamen bleiben deutsch (V2__nutzer.sql).
 @Entity
 @Table(name = "nutzer")
 public class User {
@@ -38,12 +39,13 @@ public class User {
         // für JPA
     }
 
-    public User(String name, String email, String passwordHash, Role role) {
+    // Zeitpunkt wird übergeben, damit Tests mit einer festen Uhr (Clock) arbeiten können
+    public User(String name, String email, String passwordHash, Role role, OffsetDateTime registeredAt) {
         this.name = name;
         this.email = email;
         this.passwordHash = passwordHash;
         this.role = role;
-        this.registeredAt = OffsetDateTime.now();
+        this.registeredAt = registeredAt;
     }
 
     public Long getId() { return id; }
@@ -52,4 +54,5 @@ public class User {
     public String getPasswordHash() { return passwordHash; }
     public Role getRole() { return role; }
     public OffsetDateTime getRegisteredAt() { return registeredAt; }
+    public boolean isAdmin() { return role == Role.ADMIN; }
 }
