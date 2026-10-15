@@ -18,31 +18,29 @@ class UserMigrationTest {
     private JdbcTemplate jdbcTemplate;
 
     @Test
-    void migrationenV1UndV2SindAngewendet() {
-        Integer angewendet = jdbcTemplate.queryForObject(
+    void migrationsV1AndV2AreApplied() {
+        Integer applied = jdbcTemplate.queryForObject(
                 "select count(*) from flyway_schema_history where version in ('1', '2') and success = true",
                 Integer.class);
-
-        assertThat(angewendet).isEqualTo(2);
+        assertThat(applied).isEqualTo(2);
     }
 
     @Test
-    void emailDarfNurEinmalVorkommen() {
-        nutzerEinfuegen("doppelt@test.de", "USER");
-
-        assertThatThrownBy(() -> nutzerEinfuegen("doppelt@test.de", "USER"))
+    void emailMustBeUnique() {
+        insertUser("duplicate@test.com", "USER");
+        assertThatThrownBy(() -> insertUser("duplicate@test.com", "USER"))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
-    void rolleErlaubtNurUserOderAdmin() {
-        assertThatThrownBy(() -> nutzerEinfuegen("gast@test.de", "GAST"))
+    void roleOnlyAllowsUserOrAdmin() {
+        assertThatThrownBy(() -> insertUser("guest@test.com", "GUEST"))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 
-    private void nutzerEinfuegen(String email, String rolle) {
+    private void insertUser(String email, String role) {
         jdbcTemplate.update(
                 "insert into nutzer (name, email, passwort_hash, rolle, registriert_am) values (?, ?, ?, ?, now())",
-                "Testnutzer", email, "hash", rolle);
+                "Test User", email, "hash", role);
     }
 }
