@@ -21,7 +21,7 @@ export async function request(path, { method = 'GET', body, token } = {}) {
       body: body !== undefined ? JSON.stringify(body) : undefined,
     })
   } catch {
-    throw new ApiError('Keine Verbindung zum Backend möglich.', 0)
+    throw new ApiError('Unable to connect to the backend.', 0)
   }
 
   const data = await response.json().catch(() => null)
@@ -29,7 +29,7 @@ export async function request(path, { method = 'GET', body, token } = {}) {
   if (!response.ok) {
     const message =
       data?.message ??
-      "Das Backend ist nicht erreichbar oder meldet einen Fehler (HTTP ${response.status})."
+      `The backend is unreachable or returned an error (HTTP ${response.status}).`
     throw new ApiError(message, response.status, data)
   }
   return data
@@ -38,7 +38,7 @@ export async function request(path, { method = 'GET', body, token } = {}) {
 export async function getHealth() {
   const data = await request('/health')
   if (data?.status !== 'ok') {
-    throw new ApiError('Das Backend hat eine unerwartete Antwort geschickt.', 200, data)
+    throw new ApiError('The backend sent an unexpected response.', 200, data)
   }
   return data
 }
