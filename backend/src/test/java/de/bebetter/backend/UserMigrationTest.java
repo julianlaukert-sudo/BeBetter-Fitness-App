@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
-class NutzerMigrationTest {
+class UserMigrationTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
