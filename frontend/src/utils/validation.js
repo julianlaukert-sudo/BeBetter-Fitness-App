@@ -1,28 +1,39 @@
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+export const NAME_MAX_LENGTH = 50
+export const EMAIL_MAX_LENGTH = 255
+
+export function validateName(name) {
+  const trimmed = name.trim()
+  if (!trimmed) return 'Please enter your name.'
+  if (trimmed.length > NAME_MAX_LENGTH) return `Your name can be at most ${NAME_MAX_LENGTH} characters long.`
+  return null
+}
 
 export function validateEmail(email) {
-  if (!email.trim()) return 'Bitte gib deine E-Mail-Adresse ein.'
-  if (!EMAIL_PATTERN.test(email.trim())) return 'Bitte gib eine gültige E-Mail-Adresse ein.'
+  const trimmed = email.trim()
+  if (!trimmed) return 'Please enter your email address.'
+  if (trimmed.length > EMAIL_MAX_LENGTH) return 'Your email address is too long.'
+  if (!EMAIL_PATTERN.test(trimmed)) return 'Please enter a valid email address.'
   return null
 }
 
 export function passwordChecks(password) {
   const bytes = new TextEncoder().encode(password).length
   return [
-    { label: '8 bis 64 Zeichen', ok: password.length >= 8 && password.length <= 64 },
-    { label: 'mindestens ein Großbuchstabe', ok: /\p{Lu}/u.test(password) },
-    { label: 'mindestens eine Zahl', ok: /\d/.test(password) },
-    { label: 'mindestens ein Sonderzeichen', ok: /[^\p{L}\p{N}\s]/u.test(password) },
-    { label: 'nicht zu lang (Umlaute und Emojis zählen mehrfach)', ok: bytes <= 72 },
+    { label: '8 to 64 characters', ok: password.length >= 8 && password.length <= 64 },
+    { label: 'at least one uppercase letter', ok: /\p{Lu}/u.test(password) },
+    { label: 'at least one number', ok: /\d/.test(password) },
+    { label: 'at least one special character', ok: /[^\p{L}\p{N}\s]/u.test(password) },
+    { label: 'not too long (umlauts and emojis count as several bytes)', ok: bytes <= 72 },
   ]
 }
 
 export function validatePassword(password) {
   return passwordChecks(password).every((check) => check.ok)
     ? null
-    : 'Das Passwort erfüllt noch nicht alle Regeln.'
+    : 'Your password does not meet all requirements yet.'
 }
 
 export function validatePasswordConfirm(password, confirm) {
-  return password === confirm ? null : 'Die Passwörter stimmen nicht überein.'
+  return password === confirm ? null : 'The passwords do not match.'
 }

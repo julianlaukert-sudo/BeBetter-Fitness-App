@@ -3,7 +3,7 @@ import BackendStatus from './components/BackendStatus.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
 
 function StartPage() {
-  return <p>Willkommen bei BeBetter.</p>
+  return <p>Welcome to BeBetter.</p>
 }
 
 export default function App() {
@@ -12,8 +12,8 @@ export default function App() {
       <main style={{ fontFamily: 'sans-serif', padding: '2rem', maxWidth: 480 }}>
         <h1>BeBetter</h1>
         <nav style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
-          <Link to="/">Start</Link>
-          <Link to="/register">Registrieren</Link>
+            <Link to="/">Home</Link>
+            <Link to="/register">Sign up</Link>
         </nav>
 
         <Routes>
