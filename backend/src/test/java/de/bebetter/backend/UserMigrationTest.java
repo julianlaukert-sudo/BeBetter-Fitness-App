@@ -38,6 +38,7 @@ class UserMigrationTest {
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 
+    // SQL nutzt bewusst die deutschen Tabellen- und Spaltennamen aus V2__nutzer.sql.
     private void insertUser(String email, String role) {
         jdbcTemplate.update(
                 "insert into nutzer (name, email, passwort_hash, rolle, registriert_am) values (?, ?, ?, ?, now())",
