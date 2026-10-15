@@ -1,5 +1,6 @@
 import { request } from './client.js'
 
+// Feldnamen gemäß docs/API.md
 export function registerUser({ name, email, password }) {
   return request('/users', { method: 'POST', body: { name, email, password } })
 }

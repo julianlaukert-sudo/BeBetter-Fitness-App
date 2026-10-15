@@ -1,21 +1,15 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { registerUser } from '../api/auth.js'
-import {
-  NAME_MAX_LENGTH,
-  passwordChecks,
-  validateEmail,
-  validateName,
-  validatePassword,
-  validatePasswordConfirm,
-} from '../utils/validation.js'
+import FormErrors from '../components/FormErrors.jsx'
+import { NAME_MAX_LENGTH, passwordChecks, registrationErrors } from '../utils/validation.js'
 
 export default function RegisterPage() {
   const navigate = useNavigate()
   const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' })
-  const [errors, setErrors] = useState({})
-  const [serverError, setServerError] = useState(null)
-  const [submitting, setSubmitting] = useState(false)
+  const [fields, setFields] = useState({})
+  const [message, setMessage] = useState('')
+  const [busy, setBusy] = useState(false)
 
   function update(field) {
     return (event) => setForm({ ...form, [field]: event.target.value })
@@ -23,83 +17,60 @@ export default function RegisterPage() {
 
   async function handleSubmit(event) {
     event.preventDefault()
-    setServerError(null)
+    setMessage('')
+    const errors = registrationErrors(form)
+    setFields(errors)
+    if (Object.keys(errors).length > 0) return
 
-    const newErrors = {
-      name: validateName(form.name),
-      email: validateEmail(form.email),
-      password: validatePassword(form.password),
-      confirm: validatePasswordConfirm(form.password, form.confirm),
-    }
-    setErrors(newErrors)
-    if (Object.values(newErrors).some(Boolean)) return
-
-    setSubmitting(true)
+    setBusy(true)
     try {
-      await registerUser({
-        name: form.name.trim(),
-        email: form.email.trim(),
-        password: form.password,
-      })
+      await registerUser({ name: form.name.trim(), email: form.email.trim(), password: form.password })
       navigate('/login', { state: { registered: true } })
     } catch (error) {
-      setServerError(
-        error.status === 409
-          ? 'An account with this email address already exists.'
-          : error.message,
-      )
+      setMessage(error.message)
+      setFields(error.fields ?? {})
     } finally {
-      setSubmitting(false)
+      setBusy(false)
     }
   }
 
   return (
-    <section>
+    <section className="card">
       <h2>Sign up</h2>
+      <FormErrors message={message} fields={fields} />
       <form onSubmit={handleSubmit} noValidate>
-        <label>
-          Name
-          <input
-            type="text"
-            value={form.name}
-            onChange={update('name')}
-            maxLength={NAME_MAX_LENGTH}
-            autoComplete="name"
-          />
-        </label>
-        {errors.name && <p className="error">{errors.name}</p>}
-
-        <label>
-          Email
-          <input type="email" value={form.email} onChange={update('email')} autoComplete="email" />
-        </label>
-        {errors.email && <p className="error">{errors.email}</p>}
-
-        <label>
-          Password
-          <input type="password" value={form.password} onChange={update('password')} autoComplete="new-password" />
-        </label>
-        <ul>
-          {passwordChecks(form.password).map((check) => (
-            <li key={check.label} style={{ color: check.ok ? 'green' : 'gray' }}>
-              {check.ok ? '✓' : '○'} {check.label}
-            </li>
-          ))}
-        </ul>
-        {errors.password && <p className="error">{errors.password}</p>}
-
-        <label>
-          Confirm password
-          <input type="password" value={form.confirm} onChange={update('confirm')} autoComplete="new-password" />
-        </label>
-        {errors.confirm && <p className="error">{errors.confirm}</p>}
-
-        {serverError && <p role="alert" className="error">{serverError}</p>}
-
-        <button type="submit" disabled={submitting}>
-          {submitting ? 'Sending …' : 'Create account'}
-        </button>
+        <fieldset disabled={busy}>
+          <label>
+            Name
+            <input type="text" value={form.name} onChange={update('name')} maxLength={NAME_MAX_LENGTH}
+              autoComplete="name" aria-invalid={Boolean(fields.name)} />
+          </label>
+          <label>
+            Email
+            <input type="email" value={form.email} onChange={update('email')} autoComplete="email"
+              aria-invalid={Boolean(fields.email)} />
+          </label>
+          <label>
+            Password
+            <input type="password" value={form.password} onChange={update('password')}
+              autoComplete="new-password" aria-invalid={Boolean(fields.password)} />
+          </label>
+          <ul className="password-checks">
+            {passwordChecks(form.password).map((check) => (
+              <li key={check.label} className={check.ok ? 'ok' : ''}>
+                {check.ok ? '✓' : '○'} {check.label}
+              </li>
+            ))}
+          </ul>
+          <label>
+            Confirm password
+            <input type="password" value={form.confirm} onChange={update('confirm')}
+              autoComplete="new-password" aria-invalid={Boolean(fields.confirm)} />
+          </label>
+          <button type="submit">{busy ? 'Sending …' : 'Create account'}</button>
+        </fieldset>
       </form>
+      <p>Already have an account? <Link to="/login">Log in</Link></p>
     </section>
   )
 }

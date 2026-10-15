@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import FormErrors from '../components/FormErrors.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 import { validateEmail } from '../utils/validation.js'
 
@@ -10,9 +11,9 @@ export default function LoginPage() {
   const justRegistered = location.state?.registered === true
 
   const [form, setForm] = useState({ email: '', password: '' })
-  const [errors, setErrors] = useState({})
-  const [serverError, setServerError] = useState(null)
-  const [submitting, setSubmitting] = useState(false)
+  const [fields, setFields] = useState({})
+  const [message, setMessage] = useState('')
+  const [busy, setBusy] = useState(false)
 
   function update(field) {
     return (event) => setForm({ ...form, [field]: event.target.value })
@@ -20,64 +21,46 @@ export default function LoginPage() {
 
   async function handleSubmit(event) {
     event.preventDefault()
-    setServerError(null)
+    setMessage('')
+    const errors = {}
+    const emailError = validateEmail(form.email)
+    if (emailError) errors.email = emailError
+    if (!form.password) errors.password = 'Please enter your password.'
+    setFields(errors)
+    if (Object.keys(errors).length > 0) return
 
-    const newErrors = {
-      email: validateEmail(form.email),
-      password: form.password ? null : 'Please enter your password.',
-    }
-    setErrors(newErrors)
-    if (Object.values(newErrors).some(Boolean)) return
-
-    setSubmitting(true)
+    setBusy(true)
     try {
       await login(form.email.trim(), form.password)
-      navigate('/', { replace: true })
+      navigate('/onboarding', { replace: true })
     } catch (error) {
-      setServerError(
-        error.status === 401 ? 'Email or password is incorrect.' : error.message,
-      )
+      setMessage(error.message)
     } finally {
-      setSubmitting(false)
+      setBusy(false)
     }
   }
 
   return (
-    <section>
+    <section className="card">
       <h2>Log in</h2>
-
-      {justRegistered && (
-        <p style={{ color: 'green' }}>Your account has been created. Please log in.</p>
-      )}
-
+      {justRegistered && <p className="success">Your account has been created. Please log in.</p>}
+      <FormErrors message={message} fields={fields} />
       <form onSubmit={handleSubmit} noValidate>
-        <label>
-          Email
-          <input type="email" value={form.email} onChange={update('email')} autoComplete="email" />
-        </label>
-        {errors.email && <p className="error">{errors.email}</p>}
-
-        <label>
-          Password
-          <input
-            type="password"
-            value={form.password}
-            onChange={update('password')}
-            autoComplete="current-password"
-          />
-        </label>
-        {errors.password && <p className="error">{errors.password}</p>}
-
-        {serverError && <p role="alert" className="error">{serverError}</p>}
-
-        <button type="submit" disabled={submitting}>
-          {submitting ? 'Logging in …' : 'Log in'}
-        </button>
+        <fieldset disabled={busy}>
+          <label>
+            Email
+            <input type="email" value={form.email} onChange={update('email')} autoComplete="email"
+              aria-invalid={Boolean(fields.email)} />
+          </label>
+          <label>
+            Password
+            <input type="password" value={form.password} onChange={update('password')}
+              autoComplete="current-password" aria-invalid={Boolean(fields.password)} />
+          </label>
+          <button type="submit">{busy ? 'Logging in …' : 'Log in'}</button>
+        </fieldset>
       </form>
-
-      <p>
-        No account yet? <Link to="/register">Sign up</Link>
-      </p>
+      <p>No account yet? <Link to="/register">Sign up</Link></p>
     </section>
   )
 }
