@@ -5,10 +5,12 @@ import { AuthProvider, useAuth } from './context/AuthContext.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
 import './style.css'
+import OnboardingPage from './pages/OnboardingPage.jsx';
 
-// Platzhalter bis Commit 5 (OnboardingPage)
-function OnboardingPlaceholder() {
-  return <p className="card">Logged in. The profile form follows in the next step.</p>
+// key sorgt dafür, dass sich beim Kontowechsel der Formularzustand neu aufbaut.
+function OnboardingRoute() {
+  const { user } = useAuth();
+  return <OnboardingPage key={user.userId} />;
 }
 
 function Header() {
@@ -52,7 +54,7 @@ export default function App() {
               <Route path="/" element={<Navigate to="/login" replace />} />
               <Route path="/login" element={<GuestOnly><LoginPage /></GuestOnly>} />
               <Route path="/register" element={<GuestOnly><RegisterPage /></GuestOnly>} />
-              <Route path="/onboarding" element={<RequireAuth><OnboardingPlaceholder /></RequireAuth>} />
+              <Route path="/onboarding" element={<RequireAuth><OnboardingRoute /></RequireAuth>} />
               <Route path="*" element={<p className="card">Page not found.</p>} />
             </Routes>
           </main>
