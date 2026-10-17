@@ -55,3 +55,40 @@ export function registrationErrors(form) {
   add('confirm', validatePasswordConfirm(form.password, form.confirm))
   return errors
 }
+
+const WEEK_DAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+
+export function profileErrors(form) {
+  const e = {};
+  if (!Number.isInteger(+form.age) || +form.age < 16 || +form.age > 99)
+    e.age = 'Age: whole number from 16 to 99.';
+  if (!['male', 'female', 'diverse'].includes(form.gender)) e.gender = 'Please select a gender.';
+  if (!Number.isInteger(+form.height) || +form.height < 120 || +form.height > 230)
+    e.height = 'Height: whole number from 120 to 230 cm.';
+  const weight = String(form.weight).replace(',', '.');
+  if (!/^\d+(\.\d)?$/.test(weight) || +weight < 30 || +weight > 250)
+    e.weight = 'Weight: 30 to 250 kg, at most one decimal place.';
+  if (!['muscle_gain', 'fat_loss', 'health'].includes(form.goal)) e.goal = 'Please select a goal.';
+  if (!['beginner', 'advanced'].includes(form.fitnessLevel))
+    e.fitnessLevel = 'Please select a fitness level.';
+  const selected = form.trainingDays;
+  if (selected.length !== 3 || new Set(selected).size !== 3
+      || selected.some(d => !WEEK_DAYS.includes(d))) {
+    e.trainingDays = 'Please select exactly three days.';
+  } else if (selected.some(d => selected.includes(WEEK_DAYS[(WEEK_DAYS.indexOf(d) + 1) % 7]))) {
+    e.trainingDays = 'Leave at least one rest day, also between Sunday and Monday.';
+  }
+  return e;
+}
+
+export function profileBody(form) {
+  return {
+    personal: {
+      age: +form.age, gender: form.gender, height: +form.height,
+      weight: +String(form.weight).replace(',', '.'),
+    },
+    training: {
+      goal: form.goal, fitnessLevel: form.fitnessLevel, trainingDays: form.trainingDays,
+    },
+  };
+}
