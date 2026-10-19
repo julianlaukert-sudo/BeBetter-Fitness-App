@@ -101,6 +101,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/users", "/auth").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/plans", "/plans/**").hasRole("USER")
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth -> oauth
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter))
