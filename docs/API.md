@@ -1,3 +1,4 @@
+
 # API-Vertrag (Sprint 2)
 
 Konvention (wie Referenz): Erfolg = HTTP 200. Fehler = HTTP 400 mit
@@ -93,3 +94,56 @@ Fehler (`400`):
 - `Profile already exists.`
 - `Access denied.` (ADMIN).
 - `Token is wrong.`
+
+## Sprint 3 – Trainingsplan
+
+### POST /plans (Token nötig, nur Rolle USER, kein Body)
+
+Liest das eigene Profil und erstellt den Plan ab Montag der aktuellen Woche (Europe/Berlin).
+
+Wiederholte Aufrufe derselben Woche liefern dieselbe planId.
+
+- 200: `{"message":"Plan created successfully.","planId":1,"weekStart":"2026-10-12"}`
+- 400: `Profile not found.`, `Exercises could not be loaded.`, `Week change follows in Sprint 4.`, `Token is wrong.`, `Access denied.`
+
+### GET /plans/current (Token nötig, nur Rolle USER)
+
+- 200:
+
+```json
+{
+  "planId": 1,
+  "weekStart": "2026-10-12",
+  "weekEnd": "2026-10-18",
+  "today": "2026-10-15",
+  "exerciseDataAvailable": true,
+  "sessions": [
+    {
+      "sessionId": 1,
+      "label": "A",
+      "date": "2026-10-12",
+      "exercises": [
+        {
+          "planExerciseId": 1,
+          "exerciseId": "abc123",
+          "name": "...",
+          "bodyPart": "chest",
+          "targetMuscle": "...",
+          "equipment": "dumbbell",
+          "imageUrl": "...",
+          "sets": 2,
+          "reps": "12-15",
+          "weight": 3.5,
+          "bodyweight": false
+        }
+      ]
+    }
+  ]
+}
+```
+
+`name`, `targetMuscle`, `equipment`, `imageUrl` kommen aus ExerciseDB und dürfen null sein.
+
+`exerciseDataAvailable: false` = Plan vorhanden, nur Details fehlen.
+
+- 400: `No plan found.`, `Token is wrong.`, `Access denied.`
