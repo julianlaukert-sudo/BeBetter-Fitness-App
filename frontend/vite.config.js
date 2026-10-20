@@ -1,21 +1,25 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-const backend = 'http://localhost:8080'
+const target = 'http://localhost:8080';
 
+// API-Aufrufe ans Backend
 const api = {
-  target: backend,
-  bypass: (req) => (req.headers.accept?.includes('text/html') ? req.url : undefined),
-}
+  target,
+  bypass: req => (req.headers.accept?.includes('text/html') ? '/index.html' : undefined),
+};
 
 export default defineConfig({
   plugins: [react()],
   server: {
+    port: 5173,
+    strictPort: true,
     proxy: {
-      '/health': backend,
+      '/health': target,
       '/users': api,
       '/auth': api,
       '/profile': api,
+      '/plans': api,
     },
   },
-})
+});

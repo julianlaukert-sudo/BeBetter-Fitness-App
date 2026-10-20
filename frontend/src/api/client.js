@@ -1,51 +1,42 @@
-const API_URL = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
-const TIMEOUT_MS = 8000
+export const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+const DEFAULT_TIMEOUT = 8000; // Kontoanfragen: 8 s; Plananfragen übergeben 60 s
 
 export class ApiError extends Error {
   constructor(message, status, data) {
-    super(message)
-    this.status = status
-    this.data = data
-    // Feldfehler vom Backend, z. B. { password: '...' }
-    this.fields = data?.errors ?? {}
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+    this.data = data;
+    this.fields = data?.errors ?? {};
   }
 }
 
-export async function request(path, { method = 'GET', body, token } = {}) {
-  const headers = { Accept: 'application/json' }
-  if (body !== undefined) headers['Content-Type'] = 'application/json'
-  if (token) headers.Authorization = `Bearer ${token}`
-
-  let response
+export async function request(path, { method = 'GET', body, token, timeout = DEFAULT_TIMEOUT } = {}) {
+  let response;
   try {
     response = await fetch(`${API_URL}${path}`, {
       method,
-      headers,
-      body: body !== undefined ? JSON.stringify(body) : undefined,
-      signal: AbortSignal.timeout(TIMEOUT_MS),
-    })
-  } catch (error) {
-    if (error.name === 'TimeoutError') {
-      throw new ApiError('The backend did not respond in time. Please try again.', 0)
-    }
-    throw new ApiError('Unable to connect to the backend.', 0)
+      headers: {
+        Accept: 'application/json',
+        ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}),
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
+      signal: AbortSignal.timeout(timeout),
+    });
+  } catch (e) {
+    if (e?.name === 'TimeoutError')
+      throw new ApiError('The server took too long to respond. Please try again.', 0, null);
+    throw new ApiError('Backend not reachable. Please try again.', 0, null);
   }
-
-  const data = await response.json().catch(() => null)
-
+  let data = null;
+  try { data = await response.json(); } catch { data = null; }
   if (!response.ok) {
-    const message =
-      data?.message ??
-      `The backend is unreachable or returned an error (HTTP ${response.status}).`
-    throw new ApiError(message, response.status, data)
+    throw new ApiError(data?.message || `HTTP ${response.status}`, response.status, data);
   }
-  return data
+  return data;
 }
 
-export async function getHealth() {
-  const data = await request('/health')
-  if (data?.status !== 'ok') {
-    throw new ApiError('The backend sent an unexpected response.', 200, data)
-  }
-  return data
+export function getHealth() {
+  return request('/health');
 }
