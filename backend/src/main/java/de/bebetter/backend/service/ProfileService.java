@@ -5,6 +5,7 @@ import de.bebetter.backend.domain.User;
 import de.bebetter.backend.dto.ProfileRequest;
 import de.bebetter.backend.dto.ProfileResponse;
 import de.bebetter.backend.repository.ProfileRepository;
+import de.bebetter.backend.repository.TrainingPlanRepository;
 import de.bebetter.backend.repository.UserRepository;
 import de.bebetter.backend.validation.ProfileRules;
 import de.bebetter.backend.web.ApiException;
@@ -23,11 +24,14 @@ public class ProfileService {
     private final ProfileRepository profiles;
     private final UserRepository users;
     private final Clock clock;
+    private final TrainingPlanRepository plans;
 
-    public ProfileService(ProfileRepository profiles, UserRepository users, Clock clock) {
+    public ProfileService(ProfileRepository profiles, UserRepository users, Clock clock,
+                          TrainingPlanRepository plans) {
         this.profiles = profiles;
         this.users = users;
         this.clock = clock;
+        this.plans = plans;
     }
 
     @Transactional(readOnly = true)
@@ -55,7 +59,6 @@ public class ProfileService {
                 training == null ? null : training.trainingDays());
         if (!errors.isEmpty()) throw new InvalidInputException(errors);
 
-        // Ein zweites POST überschreibt kein bestehendes Profil.
         if (profiles.existsById(userId)) throw new ApiException("Profile already exists.");
 
         Profile profile = new Profile(userId, OffsetDateTime.now(clock));
@@ -77,10 +80,9 @@ public class ProfileService {
                         p.getTrainingDayList()),
                 toDate(p.getCreatedAt()),
                 toDate(p.getUpdatedAt()),
-                false); // planExists: Trainingsplan folgt in Sprint 3
+                plans.existsByUserId(p.getUserId())); // Sprint 3: echter Planstatus
     }
 
-    /** Datum in Europe/Berlin (Zone der Clock-Bean). */
     private LocalDate toDate(OffsetDateTime time) {
         return time.atZoneSameInstant(clock.getZone()).toLocalDate();
     }
