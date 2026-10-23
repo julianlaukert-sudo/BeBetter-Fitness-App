@@ -1,5 +1,6 @@
 package de.bebetter.backend.domain;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -8,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 
@@ -43,6 +45,10 @@ public class PlanExercise {
     @Column(name = "gewicht_kg", precision = 5, scale = 1)
     private BigDecimal weightKg;
 
+    // Sprint 4: höchstens eine Markierung pro Planübung
+    @OneToOne(mappedBy = "planExercise", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ExerciseMark mark;
+
     protected PlanExercise() {}
 
     public PlanExercise(int position, String exerciseId, String bodyPart, int sets,
@@ -53,6 +59,13 @@ public class PlanExercise {
         this.sets = sets;
         this.reps = reps;
         this.weightKg = weightKg;
+    }
+
+    public ExerciseMark getMark() { return mark; }
+
+    public void setMark(ExerciseMark mark) {
+        this.mark = mark;
+        mark.setPlanExercise(this);
     }
 
     public Long getId() { return id; }

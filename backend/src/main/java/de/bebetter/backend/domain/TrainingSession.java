@@ -38,6 +38,10 @@ public class TrainingSession {
     @Column(name = "datum", nullable = false)
     private LocalDate date;
 
+    // Sprint 4: aus einer vollständig unmarkierten Vorwoche übernommen
+    @Column(name = "uebernommen", nullable = false)
+    private boolean carried;
+
     @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("position ASC")
     private List<PlanExercise> exercises = new ArrayList<>();
@@ -54,6 +58,14 @@ public class TrainingSession {
         exercise.setSession(this);
         exercises.add(exercise);
     }
+
+    /** Anzahl der Übungen mit Markierung (auch "nicht geschafft"). */
+    public long markedCount() {
+        return exercises.stream().filter(e -> e.getMark() != null).count();
+    }
+
+    public boolean isCarried() { return carried; }
+    public void setCarried(boolean carried) { this.carried = carried; }
 
     public Long getId() { return id; }
     public TrainingPlan getPlan() { return plan; }
