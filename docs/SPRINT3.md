@@ -32,13 +32,13 @@ JWT_SECRET bleibt ausschließlich im Backend.
 VITE_API_URL ist die öffentliche Backend-Origin beim Frontend-Build.
 Kein Kalender, keine Markierungen, noch kein Wochenwechsel (Sprint 4).
 
-## Tatsächliche Nachweise – erst nach Durchführung ausfüllen
-Geprüfter Commit:
-Datum und prüfende Personen:
-Lokale automatische Tests:
-Browserablauf und Kontowechsel:
-API-Ausfall und erneuter Versuch:
+## Tatsächliche Nachweise 
+Geprüfter Commit: 6fb7d66
+Datum und prüfende Personen: 23.10.2026, Person 1, Person 2, Person 3
+Lokale automatische Tests: 53 Backend-Tests grün, 1 Live-Test übersprungen; 7 Frontend-Tests und Build grün
+Browserablauf und Kontowechsel: durchgeführt
+API-Ausfall und erneuter Versuch: durchgeführt
 Live-API-Ergebnis: offen (HTTP 429 Rate Limit)
-Manuell veröffentlichter Backend-Commit und URL:
-Manuell veröffentlichter Frontend-Commit und URL:
-Offene Fehler:
+Manuell veröffentlichter Backend-Commit und URL: 6fb7d66, https://bebetter-fitness-app-0caa005ed4cc.herokuapp.com
+Manuell veröffentlichter Frontend-Commit und URL: 6fb7d66, https://bebetter-frontend-8982b2eba40e.herokuapp.com
+Offene Fehler: keine
