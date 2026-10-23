@@ -35,6 +35,10 @@ public class TrainingPlan {
     @Column(name = "erstellt_am", nullable = false)
     private OffsetDateTime createdAt;
 
+    // Sprint 4: true = Woche abgeschlossen, nicht mehr bearbeitbar
+    @Column(name = "ausgewertet", nullable = false)
+    private boolean evaluated;
+
     @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("position ASC")
     private List<TrainingSession> sessions = new ArrayList<>();
@@ -56,6 +60,9 @@ public class TrainingPlan {
     public boolean contains(LocalDate day) {
         return !day.isBefore(weekStart) && !day.isAfter(weekEnd);
     }
+
+    public boolean isEvaluated() { return evaluated; }
+    public void setEvaluated(boolean evaluated) { this.evaluated = evaluated; }
 
     public Long getId() { return id; }
     public Long getUserId() { return userId; }
