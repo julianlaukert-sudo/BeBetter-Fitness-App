@@ -20,6 +20,7 @@ export default defineConfig({
       '/auth': api,
       '/profile': api,
       '/plans': api,
+      '/marks': api,
     },
   },
 });

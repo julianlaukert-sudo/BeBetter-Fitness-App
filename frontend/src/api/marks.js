@@ -1,0 +1,1 @@
+export const saveMark = (authorized, body) => authorized('/marks', { method: 'POST', body });
