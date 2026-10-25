@@ -15,9 +15,12 @@ export function PlanProvider({ children }) {
   const [error, setError] = useState('');
   const running = useRef(null);
 
-  const refresh = useCallback(async () => {
-    // Gleichzeitige Ladeversuche teilen sich eine laufende Anfragefolge
-    if (running.current) return running.current;
+  // afterSave = true: auf laufende Anfrage warten und danach sicher NEU laden
+  const refresh = useCallback(async (afterSave = false) => {
+    while (running.current) {
+      if (!afterSave) return running.current;
+      try { await running.current; } catch { /* danach folgt ein neuer Ladeversuch */ }
+    }
     const work = async () => {
       setBusy(true);
       setError('');
@@ -28,18 +31,20 @@ export function PlanProvider({ children }) {
           data = await loadPlan(call);
         } catch (e) {
           if (e.message !== 'No plan found.') throw e;
-          await createPlan(call);       // idempotent im Backend
+          await createPlan(call);
           data = await loadPlan(call);
         }
         setPlan(data);
+        return data;
       } catch (e) {
         setError(e.message);
+        throw e; // Aufrufer (z. B. MarkForm) erfährt vom Fehler
       } finally {
         setBusy(false);
       }
     };
     running.current = work();
-    try { await running.current; } finally { running.current = null; }
+    try { return await running.current; } finally { running.current = null; }
   }, []);
 
   return (
