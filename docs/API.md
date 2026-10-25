@@ -147,3 +147,22 @@ Wiederholte Aufrufe derselben Woche liefern dieselbe planId.
 `exerciseDataAvailable: false` = Plan vorhanden, nur Details fehlen.
 
 - 400: `No plan found.`, `Token is wrong.`, `Access denied.`
+
+## Sprint 4 – Markierungen
+
+### POST /marks  (Token nötig, nur Rolle USER)
+```json
+{"sessionId":101,"planExerciseId":501,"done":false,"weight":3.5,"reps":6}
+```
+Regeln: done Pflicht (true/false), reps 0–200 ganze Zahl, weight 0–500 mit max. 1 Nachkommastelle,
+bei Gewichtsübungen Pflicht, bei Körpergewicht wird null gespeichert.
+Bearbeitbar vom Trainingstag bis Sonntag dieser Woche (Backenddatum Europe/Berlin).
+Korrektur derselben Planübung behält die id.
+- 200: `{"id":1,"date":"2026-10-23","done":false,"weight":3.5,"reps":6,"automatic":false}`
+- 400: `Invalid training values.`, `Invalid input.`, `Exercise not found.`, `Session is not editable.`,
+  `Profile not found.`, `Token is wrong.`, `Access denied.`
+
+### GET /plans/current – Ergänzung
+Session zusätzlich: `status` (OPEN|IN_PROGRESS|DONE|FAILED|PARTIAL), `available`, `carried`.
+Exercise zusätzlich: `mark` (wie Antwort von POST /marks) oder null.
+weight/reps der Übung bleiben die Vorgaben; mark.weight/mark.reps sind die Istwerte.
