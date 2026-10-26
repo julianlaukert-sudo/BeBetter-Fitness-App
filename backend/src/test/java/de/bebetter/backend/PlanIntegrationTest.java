@@ -144,7 +144,9 @@ class PlanIntegrationTest {
                     .andExpect(status().isOk());
             doReturn(PlanRulesTest.candidates()).when(api).candidates(anyCollection());
             create(a);
-        } finally { clean(a); }
+        } finally {
+            clean(a);
+        }
     }
 
     @Test void missingDetailsPreserveSavedInstructions() throws Exception {
@@ -159,18 +161,30 @@ class PlanIntegrationTest {
         assertEquals(2, e.get("sets").asInt());
     }
 
-    @Test void otherUsersPlanCannotBeSelectedByQueryOrBody() throws Exception {
+    @Test
+    void otherUsersPlanCannotBeSelectedByQueryOrBody() throws Exception {
         var a = account(true);
         var b = account(true);
         var first = create(a);
+
         mvc.perform(get("/plans/current?userId=" + a.id())
                         .header("Authorization", "Bearer " + b.token()))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("No plan found."));
-        var response = mvc.perform(post("/plans").header("Authorization", "Bearer " + b.token())
-                        .contentType(MediaType.APPLICATION_JSON).content("{\"userId\":" + a.id() + "}"))
-                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
-        assertNotEquals(first.get("planId"), json.readTree(response).get("planId"));
+
+        var response = mvc.perform(post("/plans")
+                        .header("Authorization", "Bearer " + b.token())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"userId\":" + a.id() + "}"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertNotEquals(
+                first.get("planId"),
+                json.readTree(response).get("planId")
+        );
     }
 
     @Test void insufficientCandidatesLeaveNoPartialPlan() throws Exception {
@@ -191,12 +205,14 @@ class PlanIntegrationTest {
         verify(api, never()).candidates(anyCollection());
     }
 
-    @Test void noWeekRolloverIsInventedBeforeSprintFour() throws Exception {
+    // Sprint 4: ein alter Plan wird jetzt in die aktuelle Woche kopiert – ohne neue Auswahl
+    @Test void oldPlanNowRollsOverWithoutAnotherSelection() throws Exception {
         var a = account(true);
         var monday = PlanGenerator.mondayOf(LocalDate.now(ZoneId.of("Europe/Berlin")));
         plans.saveAndFlush(new TrainingPlan(a.id(), monday.minusWeeks(1), OffsetDateTime.now()));
         mvc.perform(post("/plans").header("Authorization", "Bearer " + a.token()))
-                .andExpect(jsonPath("$.message").value("Week change follows in Sprint 4."));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.weekStart").value(monday.toString()));
         verify(api, never()).candidates(anyCollection());
     }
 

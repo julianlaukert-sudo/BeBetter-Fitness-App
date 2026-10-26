@@ -14,10 +14,8 @@ import de.bebetter.backend.rules.EquipmentCategory;
 import de.bebetter.backend.rules.ExerciseSelection;
 import de.bebetter.backend.rules.PlanRules;
 import de.bebetter.backend.web.ApiException;
-import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Map;
@@ -30,14 +28,14 @@ public class PlanGenerator {
     private final ExerciseDbClient api;
     private final ProfileRepository profiles;
     private final TrainingPlanRepository plans;
-    private final Clock clock;
+    private final TimeProvider time;
 
     public PlanGenerator(ExerciseDbClient api, ProfileRepository profiles,
-                         TrainingPlanRepository plans, Clock clock) {
+                         TrainingPlanRepository plans, TimeProvider time) {
         this.api = api;
         this.profiles = profiles;
         this.plans = plans;
-        this.clock = clock;
+        this.time = time;
     }
 
     public static LocalDate mondayOf(LocalDate date) {
@@ -46,15 +44,14 @@ public class PlanGenerator {
 
     @Transactional
     public TrainingPlan create(Long userId) {
-        // Sperrt die eigene Profilzeile: gleichzeitige Anfragen warten hier
         Profile profile = profiles.findForPlan(userId)
                 .orElseThrow(() -> new ApiException("Profile not found."));
-        LocalDate monday = mondayOf(LocalDate.now(clock));
+        LocalDate monday = mondayOf(time.today());
 
         var existing = plans.findByUserIdAndWeekStart(userId, monday);
         if (existing.isPresent()) return existing.get();   // idempotent
-        if (plans.existsByUserId(userId))                   // kein stiller Wochenwechsel
-            throw new ApiException("Week change follows in Sprint 4.");
+        if (plans.existsByUserId(userId))                   // Wechsel lief vorher schon
+            throw new ApiException("Plan week is not current.");
 
         Map<String, List<CatalogExercise>> candidates = api.candidates(PlanRules.BODY_PARTS);
         Map<String, List<CatalogExercise>> selected;
@@ -64,7 +61,7 @@ public class PlanGenerator {
             throw new ExerciseDbException("Not enough suitable exercises.", ex);
         }
 
-        TrainingPlan plan = new TrainingPlan(userId, monday, OffsetDateTime.now(clock));
+        TrainingPlan plan = new TrainingPlan(userId, monday, time.now());
         // Tage nach Wochentag sortieren, damit A/B/C in Wochenreihenfolge liegen
         List<Weekday> days = profile.getTrainingDayList().stream().sorted().toList();
         for (int i = 0; i < 3; i++) {

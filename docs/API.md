@@ -166,3 +166,11 @@ Korrektur derselben Planübung behält die id.
 Session zusätzlich: `status` (OPEN|IN_PROGRESS|DONE|FAILED|PARTIAL), `available`, `carried`.
 Exercise zusätzlich: `mark` (wie Antwort von POST /marks) oder null.
 weight/reps der Übung bleiben die Vorgaben; mark.weight/mark.reps sind die Istwerte.
+
+### Wochenwechsel 
+GET /plans/current und POST /plans schließen zuerst veraltete Wochen ab und kopieren sie:
+- teilweise markierte Einheiten: offene Übungen -> automatisch nicht geschafft
+  (automatic=true, reps=0, weight=null, Datum = Sonntag der alten Woche)
+- ganz unmarkierte Einheiten: keine Fehlmarkierungen, Kopie mit carried=true
+- Kopie: gleiche Vorgaben, neue IDs, keine Markierungen, keine Gewichtsanpassung
+  Zusätzlich läuft montags 00:05 (Europe/Berlin) ein Job, solange das Backend läuft.
