@@ -4,3 +4,6 @@ spring:
     username: bebetter
     password: bebetter
 JWT_SECRET: test-only-secret-at-least-thirty-two-bytes-long
+
+training:
+  week-change-cron: "-"
