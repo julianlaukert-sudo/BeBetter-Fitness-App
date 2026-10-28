@@ -127,7 +127,7 @@ export default function OnboardingPage() {
             // Die gespeicherten Profildaten anzeigen.
             setSaved(data);
 
-            // NEU: Nach erfolgreichem Speichern zur Trainingsseite wechseln.
+            // Nach erfolgreichem Speichern zur Trainingsseite wechseln.
             // Dort wird der Trainingsplan erstellt.
             navigate('/training');
         } catch (e) {
@@ -174,8 +174,9 @@ export default function OnboardingPage() {
                     {saved.training.trainingDays.join(', ')}
                 </p>
 
-                {/* NEU: Link zur Trainingsseite */}
+                {/*Link zur Trainingsseite */}
                 <Link to="/training">Go to training plan</Link>
+                <p><Link to="/profile">Edit profile</Link></p>
 
                 <p>Editing the profile follows in Sprint 5.</p>
             </section>
