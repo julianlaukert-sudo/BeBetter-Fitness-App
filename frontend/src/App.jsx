@@ -9,6 +9,7 @@ import HomePage from './pages/HomePage.jsx';
 import TrainingPage from './pages/TrainingPage.jsx';
 import SessionPage from './pages/SessionPage.jsx';
 import './style.css';
+import ProfilePage from './pages/ProfilePage.jsx';
 
 function Header() {
   const { user, isAuthenticated, logout } = useAuth();
@@ -26,7 +27,7 @@ function Header() {
           ? <>
               <Link to="/home">Start</Link>{' '}
               <Link to="/training">Training</Link>{' '}
-              <Link to="/onboarding">My profile</Link>{' '}
+              <Link to="/profile">My profile</Link>{' '}
               <button type="button" onClick={signOut}>Log out</button>
             </>
           : <>
@@ -43,6 +44,12 @@ function Header() {
 function OnboardingRoute() {
   const { user } = useAuth();
   return <OnboardingPage key={user.userId} />;
+}
+
+// key: beim Kontowechsel baut sich das Formular neu auf
+function ProfileRoute() {
+  const { user } = useAuth();
+  return <ProfilePage key={user.userId} />;
 }
 
 // key: beim Kontowechsel bleibt kein alter Plan im Zustand
@@ -64,6 +71,7 @@ export default function App() {
                 <Route path="/login" element={<GuestOnly><LoginPage /></GuestOnly>} />
                 <Route path="/register" element={<GuestOnly><RegisterPage /></GuestOnly>} />
                 <Route path="/onboarding" element={<RequireAuth><OnboardingRoute /></RequireAuth>} />
+                <Route path="/profile" element={<RequireAuth><ProfileRoute /></RequireAuth>} />
                 <Route path="/home" element={<RequireAuth><HomePage /></RequireAuth>} />
                 <Route path="/training" element={<RequireAuth><TrainingPage /></RequireAuth>} />
                 <Route path="/session/:id" element={<RequireAuth><SessionPage /></RequireAuth>} />

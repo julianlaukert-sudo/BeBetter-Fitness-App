@@ -11,7 +11,7 @@ export default function HomePage() {
         : <>
             <p>Your personal training plan is ready to be created.</p>
             <Link to="/training">Go to training</Link>{' '}
-            <Link to="/onboarding">My profile</Link>
+            <Link to="/profile">My profile</Link>
           </>}
     </section>
   );
