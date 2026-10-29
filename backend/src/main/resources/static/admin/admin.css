@@ -1,0 +1,15 @@
+body { margin: 0; font: 17px/1.5 system-ui, sans-serif; color: #16333b; background: #f4f7f8; }
+main { max-width: 1100px; margin: 32px auto; padding: 24px; background: white; }
+nav { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; }
+nav form { margin: 0; }
+button { padding: 10px 16px; cursor: pointer; font: inherit; }
+a { color: #145a70; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+caption { text-align: left; padding: 12px 0; }
+th, td { text-align: left; border-bottom: 1px solid #bccdd1; padding: 10px; overflow-wrap: anywhere; }
+dt { margin-top: 14px; }
+dd { font-size: 1.5rem; margin-left: 0; }
+.danger { background: #9b2424; color: white; border: 0; }
+[role=alert] { color: #9b2424; }
+@media (max-width: 600px) { main { margin: 0; padding: 16px; } }

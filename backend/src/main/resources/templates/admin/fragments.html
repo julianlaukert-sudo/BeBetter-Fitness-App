@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${title} + ' - BeBetter Admin'">BeBetter Admin</title>
+    <link rel="stylesheet" th:href="@{/admin/admin.css}">
+</head>
+<body>
+<header th:fragment="nav">
+    <h1>BeBetter Administration</h1>
+    <p>Signed in: <span th:text="${adminName}">Admin</span></p>
+    <nav aria-label="Administration">
+        <a th:href="@{/admin/overview}">Overview</a>
+        <a th:href="@{/admin/accounts}">Users</a>
+        <!-- th:action ergänzt automatisch das CSRF-Feld -->
+        <form th:action="@{/admin/logout}" method="post"><button type="submit">Log out</button></form>
+    </nav>
+    <p role="status" th:if="${success}" th:text="${success}"></p>
+    <p role="alert" th:if="${error}" th:text="${error}"></p>
+</header>
+</body>
+</html>
