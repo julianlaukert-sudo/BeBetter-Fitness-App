@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/fragments :: head('Users')}"></head>
+<body>
+<main>
+    <header th:replace="~{admin/fragments :: nav}"></header>
+    <h2>User list</h2>
+    <div class="table-wrap">
+        <table>
+            <caption>Registered accounts, newest first</caption>
+            <thead>
+            <tr><th>Name</th><th>Email</th><th>Registered on</th><th>Role</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${users}">
+                <!-- th:text maskiert HTML-Zeichen automatisch -->
+                <td th:text="${user.name}">Name</td>
+                <td th:text="${user.email}">Email</td>
+                <td th:text="${user.registeredAt}">Date</td>
+                <td th:text="${user.role}">USER</td>
+                <td>
+                    <a th:if="${user.role == 'USER'}"
+                       th:href="@{/admin/accounts/{id}/delete(id=${user.userId})}">Review deletion</a>
+                    <span th:if="${user.role == 'ADMIN'}">Protected</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/fragments :: head('Delete user')}"></head>
+<body>
+<main>
+    <header th:replace="~{admin/fragments :: nav}"></header>
+    <h2>Delete user</h2>
+    <p><strong th:text="${user.name}">Name</strong> (<span th:text="${user.email}">Email</span>)</p>
+    <section th:if="${user.role == 'USER'}">
+        <p>This account will be permanently deleted together with its profile, plan weeks,
+            sessions, exercises and marks.</p>
+        <p>Please check the person and the email address before confirming.</p>
+        <!-- Erst dieses POST-Formular löscht; der GET-Aufruf zeigt nur diese Seite -->
+        <form th:action="@{/admin/accounts/{id}/delete(id=${user.userId})}" method="post">
+            <button type="submit" class="danger">Permanently delete user and data</button>
+        </form>
+    </section>
+    <p th:if="${user.role == 'ADMIN'}">The admin account is protected and cannot be deleted.</p>
+    <a th:href="@{/admin/accounts}">Cancel and go back to the list</a>
+</main>
+</body>
+</html>

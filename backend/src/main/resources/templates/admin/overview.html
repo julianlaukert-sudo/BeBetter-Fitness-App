@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/fragments :: head('Overview')}"></head>
+<body>
+<main>
+    <header th:replace="~{admin/fragments :: nav}"></header>
+    <h2>Overview</h2>
+    <dl>
+        <dt>User accounts (role USER)</dt>
+        <dd th:text="${stats.users}">0</dd>
+        <dt>Stored plan weeks in total</dt>
+        <dd th:text="${stats.plans}">0</dd>
+        <dt>Manually marked exercises in the last seven days</dt>
+        <dd th:text="${stats.marksLastSevenDays}">0</dd>
+    </dl>
+    <p>Today and the six previous days. Automatic "not done" marks are not counted.</p>
+    <h2>The five newest accounts</h2>
+    <ul>
+        <li th:each="user : ${latest}">
+            <span th:text="${user.name}">Name</span> (<span th:text="${user.role}">USER</span>)
+        </li>
+    </ul>
+    <a th:href="@{/admin/accounts}">Go to the full user list</a>
+</main>
+</body>
+</html>
