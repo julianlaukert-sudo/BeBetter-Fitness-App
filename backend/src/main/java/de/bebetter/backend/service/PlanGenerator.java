@@ -42,6 +42,7 @@ public class PlanGenerator {
         return date.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
     }
 
+    /** Erster Plan eines Nutzers (POST /plans). */
     @Transactional
     public TrainingPlan create(Long userId) {
         Profile profile = profiles.findForPlan(userId)
@@ -50,9 +51,16 @@ public class PlanGenerator {
 
         var existing = plans.findByUserIdAndWeekStart(userId, monday);
         if (existing.isPresent()) return existing.get();   // idempotent
-        if (plans.existsByUserId(userId))                   // Wechsel lief vorher schon
+        if (plans.existsByUserId(userId))
             throw new ApiException("Plan week is not current.");
 
+        TrainingPlan plan = build(profile, monday);
+        profile.setReplanFrom(null);   // erster Plan nutzt bereits das aktuelle Profil
+        return plans.saveAndFlush(plan);
+    }
+
+    /** Baut einen neuen Plan nach den Sprint-3-Regeln (Erstplan und Profil-Neuplanung). */
+    public TrainingPlan build(Profile profile, LocalDate monday) {
         Map<String, List<CatalogExercise>> candidates = api.candidates(PlanRules.BODY_PARTS);
         Map<String, List<CatalogExercise>> selected;
         try {
@@ -61,7 +69,7 @@ public class PlanGenerator {
             throw new ExerciseDbException("Not enough suitable exercises.", ex);
         }
 
-        TrainingPlan plan = new TrainingPlan(userId, monday, time.now());
+        TrainingPlan plan = new TrainingPlan(profile.getUserId(), monday, time.now());
         // Tage nach Wochentag sortieren, damit A/B/C in Wochenreihenfolge liegen
         List<Weekday> days = profile.getTrainingDayList().stream().sorted().toList();
         for (int i = 0; i < 3; i++) {
@@ -76,6 +84,6 @@ public class PlanGenerator {
             }
             plan.addSession(session);
         }
-        return plans.saveAndFlush(plan);
+        return plan;
     }
 }

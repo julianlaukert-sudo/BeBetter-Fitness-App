@@ -1,3 +1,4 @@
+
 package de.bebetter.backend.domain;
 
 import jakarta.persistence.Column;
@@ -50,6 +51,10 @@ public class Profile {
     @Column(name = "aktualisiert_am", nullable = false)
     private OffsetDateTime updatedAt;
 
+    // Datum, ab dem neu geplant werden soll
+    @Column(name = "neu_planen_ab")
+    private java.time.LocalDate replanFrom;
+
     protected Profile() {
         // für JPA
     }
@@ -85,4 +90,7 @@ public class Profile {
     public OffsetDateTime getCreatedAt() { return createdAt; }
     public OffsetDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(OffsetDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+    public java.time.LocalDate getReplanFrom() { return replanFrom; }
+    public void setReplanFrom(java.time.LocalDate replanFrom) { this.replanFrom = replanFrom; }
 }
