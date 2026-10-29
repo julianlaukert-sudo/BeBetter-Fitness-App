@@ -174,3 +174,14 @@ GET /plans/current und POST /plans schließen zuerst veraltete Wochen ab und kop
 - ganz unmarkierte Einheiten: keine Fehlmarkierungen, Kopie mit carried=true
 - Kopie: gleiche Vorgaben, neue IDs, keine Markierungen, keine Gewichtsanpassung
   Zusätzlich läuft montags 00:05 (Europe/Berlin) ein Job, solange das Backend läuft.
+
+## Sprint 5 – Profil bearbeiten
+
+### PUT /profile  (Token nötig, nur Rolle USER)
+Gleicher Body und gleiche Regeln wie POST /profile. Holt vorher verpasste Wochen mit dem alten Profil nach.
+Speichert sofort; die aktuelle Woche bleibt unverändert.
+Relevante Änderungen (Alter, Größe, Gewicht, Ziel, Level, Trainingstage) -> neuer Plan ab nächstem Montag.
+Nur Geschlecht oder gleiche Werte -> keine Neuplanung. Ohne bisherigen Plan -> keine Vormerkung.
+- 200: ProfileResponse inkl. `nextPlanFrom` (Datum oder null)
+- 400: `Invalid input.` + errors, `Profile not found.`, `Access denied.`, `Token is wrong.`
+  GET/POST /profile liefern ebenfalls `nextPlanFrom`.

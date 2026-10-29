@@ -9,33 +9,38 @@ import de.bebetter.backend.repository.TrainingPlanRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
+/**
+ * Wochenwechsel: alte Woche abschließen, dann entweder unverändert kopieren.
+ * Schlägt die Neuplanung fehl (z. B. ExerciseDB), wird alles zurückgerollt.
+ */
 @Service
 public class WeekChangeService {
 
     private final ProfileRepository profiles;
     private final TrainingPlanRepository plans;
     private final TimeProvider time;
+    private final PlanGenerator generator;
 
     public WeekChangeService(ProfileRepository profiles, TrainingPlanRepository plans,
-                             TimeProvider time) {
+                             TimeProvider time, PlanGenerator generator) {
         this.profiles = profiles;
         this.plans = plans;
         this.time = time;
+        this.generator = generator;
     }
 
     @Transactional
     public void update(Long userId) {
-        // Dieselbe Profilsperre wie Planerstellung und Markierung
-        if (profiles.findForPlan(userId).isEmpty()) return;
+        var profile = profiles.findForPlan(userId).orElse(null);   // Profilsperre
+        if (profile == null) return;
 
         TrainingPlan last = plans.findFirstByUserIdOrderByWeekStartDesc(userId).orElse(null);
         var monday = PlanGenerator.mondayOf(time.today());
 
         while (last != null && last.getWeekStart().isBefore(monday)) {
-            // 1) Abschluss: nur offene Übungen TEILWEISE markierter Einheiten automatisch "nicht geschafft"
+            // 1) Abschluss: nur offene Übungen teilweise markierter Einheiten automatisch "nicht geschafft"
             for (TrainingSession s : last.getSessions()) {
-                if (s.markedCount() == 0) continue;   // ganz unmarkiert -> keine erfundenen Ergebnisse
+                if (s.markedCount() == 0) continue;
                 for (PlanExercise e : s.getExercises()) {
                     if (e.getMark() == null) {
                         e.setMark(new ExerciseMark(last.getWeekEnd(), false, null, 0, true,
@@ -45,19 +50,27 @@ public class WeekChangeService {
             }
             last.setEvaluated(true);
 
-            // 2) Kopie: gleiche Vorgaben, neue IDs, keine Markierungen, keine Gewichtsanpassung
-            var next = new TrainingPlan(userId, last.getWeekStart().plusWeeks(1), time.now());
-            for (TrainingSession s : last.getSessions()) {
-                var copy = new TrainingSession(s.getLabel(), s.getPosition(),
-                        s.getDate().plusWeeks(1));
-                copy.setCarried(s.markedCount() == 0);
-                for (PlanExercise e : s.getExercises()) {
-                    copy.addExercise(new PlanExercise(e.getPosition(), e.getExerciseId(),
-                            e.getBodyPart(), e.getSets(), e.getReps(), e.getWeightKg()));
+            var start = last.getWeekStart().plusWeeks(1);
+            TrainingPlan next;
+            if (profile.getReplanFrom() != null && !start.isBefore(profile.getReplanFrom())) {
+                // 2a) Profiländerung fällig: neuer Plan nach Erstplanregeln (braucht ExerciseDB)
+                next = generator.build(profile, start);
+                profile.setReplanFrom(null);
+            } else {
+                // 2b) Normalfall: Vorgaben unverändert kopieren (Sprint 4)
+                next = new TrainingPlan(userId, start, time.now());
+                for (TrainingSession s : last.getSessions()) {
+                    var copy = new TrainingSession(s.getLabel(), s.getPosition(),
+                            s.getDate().plusWeeks(1));
+                    copy.setCarried(s.markedCount() == 0);
+                    for (PlanExercise e : s.getExercises()) {
+                        copy.addExercise(new PlanExercise(e.getPosition(), e.getExerciseId(),
+                                e.getBodyPart(), e.getSets(), e.getReps(), e.getWeightKg()));
+                    }
+                    next.addSession(copy);
                 }
-                next.addSession(copy);
             }
-            last = plans.saveAndFlush(next);   // weiter, bis die aktuelle Woche erreicht ist
+            last = plans.saveAndFlush(next);
         }
     }
 }

@@ -1,0 +1,1 @@
+ALTER TABLE profil ADD COLUMN neu_planen_ab DATE;
