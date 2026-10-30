@@ -185,3 +185,19 @@ Nur Geschlecht oder gleiche Werte -> keine Neuplanung. Ohne bisherigen Plan -> k
 - 200: ProfileResponse inkl. `nextPlanFrom` (Datum oder null)
 - 400: `Invalid input.` + errors, `Profile not found.`, `Access denied.`, `Token is wrong.`
   GET/POST /profile liefern ebenfalls `nextPlanFrom`.
+
+### Administration
+
+### Admin-JSON (Bearer-Token mit Rolle ADMIN)
+- GET /admin/users -> [{userId, name, email, registeredAt, role}]
+- GET /admin/stats -> {users, plans, marksLastSevenDays}
+- DELETE /admin/users/{id} -> {"message":"User deleted.","userId":...}
+- 400: `User not found.`, `Admin cannot be deleted.`, `Access denied.`, `Token is wrong.`
+
+### Adminseiten (MPA, Thymeleaf, Session + CSRF)
+- POST /admin/sso (Formularfeld `token`, Origin muss FRONTEND_URL sein) -> neue Session, Redirect /admin/overview
+- GET /admin/overview, GET /admin/accounts
+- GET /admin/accounts/{id}/delete (nur Bestätigung), POST /admin/accounts/{id}/delete (löscht, CSRF)
+- POST /admin/logout (CSRF) -> Redirect FRONTEND_URL/login?loggedOut=1
+- Nicht angemeldet -> Redirect FRONTEND_URL/login; falscher Origin/Rolle/CSRF -> 403
+  Jedes JWT wird zusätzlich gegen die Datenbank geprüft (Konto vorhanden, Rolle passt).
