@@ -9,10 +9,21 @@ const AuthContext = createContext(null)
 
 function readSession() {
     try {
-        const data = JSON.parse(sessionStorage.getItem(STORAGE_KEY))
-        return data && typeof data.token === 'string' && Number.isFinite(data.userId) ? data : null
+        const data = JSON.parse(sessionStorage.getItem(STORAGE_KEY));
+
+        // Admins arbeiten im Backend-Adminbereich.
+        if (data?.role === 'ADMIN') {
+            sessionStorage.removeItem(STORAGE_KEY);
+            return null;
+        }
+
+        return data
+            && typeof data.token === 'string'
+            && Number.isFinite(data.userId)
+            ? data
+            : null;
     } catch {
-        return null
+        return null;
     }
 }
 
@@ -46,6 +57,8 @@ export function AuthProvider({ children }) {
     // token, userId, name, role und profileCompleted.
     async function login(email, password) {
         const data = await loginRequest({ email, password })
+        // Admin-Token nicht im Browser speichern
+        if (data.role === 'ADMIN') return data;
         changeUser(data)
         return data
     }
