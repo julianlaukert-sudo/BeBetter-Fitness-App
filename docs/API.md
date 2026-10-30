@@ -201,3 +201,12 @@ Nur Geschlecht oder gleiche Werte -> keine Neuplanung. Ohne bisherigen Plan -> k
 - POST /admin/logout (CSRF) -> Redirect FRONTEND_URL/login?loggedOut=1
 - Nicht angemeldet -> Redirect FRONTEND_URL/login; falscher Origin/Rolle/CSRF -> 403
   Jedes JWT wird zusätzlich gegen die Datenbank geprüft (Konto vorhanden, Rolle passt).
+
+## GraphQL (Admin)
+
+POST /graphql mit `Authorization: Bearer <ADMIN-Token>` und JSON-Body `{"query": "..."}`.
+Schema: backend/src/main/resources/graphql/schema.graphqls
+
+```graphql
+{ adminStats { users plans marksLastSevenDays } adminUsers { userId name email registeredAt role } }
+mutation { deleteUser(id: "42") { message userId } }

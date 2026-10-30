@@ -1,0 +1,27 @@
+type Query {
+  adminUsers: [AdminUser!]!
+  adminStats: AdminStats!
+}
+
+type Mutation {
+  deleteUser(id: ID!): DeletedUser
+}
+
+type AdminUser {
+  userId: ID!
+  name: String!
+  email: String!
+  registeredAt: String!
+  role: String!
+}
+
+type AdminStats {
+  users: Int!
+  plans: Int!
+  marksLastSevenDays: Int!
+}
+
+type DeletedUser {
+  message: String!
+  userId: ID!
+}

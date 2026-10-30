@@ -218,6 +218,7 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers("/admin/**")
                         .hasRole("ADMIN")
+                        .requestMatchers("/graphql").hasRole("ADMIN")
                         .requestMatchers(
                                 "/plans",
                                 "/plans/**",
