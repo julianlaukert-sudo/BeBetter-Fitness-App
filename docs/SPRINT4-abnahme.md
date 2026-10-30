@@ -38,5 +38,4 @@ Nicht ausgeführte Prüfungen bleiben offen; keine erfundenen Nachweise.
 Externe ExerciseDB-Verfügbarkeit wird durch die Mocktests nicht nachgewiesen.
 Adminoberfläche (mit GraphQL) folgt in Sprint 5.
 
-## Beobachtungen und Restpunkte
-Hier tatsächliche Ergebnisse, Fehler und Nachprüfungen eintragen.
+

@@ -3,6 +3,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import FormErrors from '../components/FormErrors.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 import { validateEmail } from '../utils/validation.js'
+import { useSearchParams } from 'react-router-dom';
+import { openAdmin } from '../api/adminSso.js';
 
 export default function LoginPage() {
     const { login } = useAuth()
@@ -14,6 +16,7 @@ export default function LoginPage() {
     const [fields, setFields] = useState({})
     const [message, setMessage] = useState('')
     const [busy, setBusy] = useState(false)
+    const [params] = useSearchParams();
 
     function update(field) {
         return (event) =>
@@ -40,26 +43,26 @@ export default function LoginPage() {
         setBusy(true)
 
         try {
-            // Login mit den eingegebenen Formularwerten.
-            const session = await login(form.email, form.password)
+            const session = await login(form.email, form.password);
 
-            // ADMIN oder Nutzer mit vollständigem Profil -> Startseite.
-            // Nutzer ohne vollständiges Profil -> Onboarding.
-            navigate(
-                session.role === 'ADMIN' || session.profileCompleted
-                    ? '/home'
-                    : '/onboarding'
-            )
+            if (session.role === 'ADMIN') {
+                openAdmin(session.token);
+                return;
+            }
+
+            navigate(session.profileCompleted ? '/home' : '/onboarding');
         } catch (error) {
-            setMessage(error.message)
+            setMessage(error.message);
         } finally {
-            setBusy(false)
+            setBusy(false);
         }
     }
 
     return (
         <section className="card">
             <h2>Log in</h2>
+        {params.get('loggedOut') === '1' && <p role="status">Admin logged out.</p>}
+        {params.get('adminError') === '1' && (<p role="alert">Admin login failed. Please log in again.</p>)}
 
             {justRegistered && (
                 <p className="success">
