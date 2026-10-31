@@ -1,3 +1,16 @@
+## Übersicht
+
+| Bereich | Endpunkte | Zugriff |
+|---|---|---|
+| Health | GET /health | offen |
+| Konto | POST /users, POST /auth, DELETE /auth | offen / Token |
+| Profil | GET/POST/PUT /profile | USER |
+| Training | POST /plans, GET /plans/current, POST /marks | USER |
+| Admin-JSON | GET /admin/users, GET /admin/stats, DELETE /admin/users/{id} | ADMIN-Bearer |
+| GraphQL | POST /graphql | ADMIN-Bearer |
+| Adminseiten (MPA) | POST /admin/sso, /admin/overview, /admin/accounts, /admin/accounts/{id}/delete, POST /admin/logout | Admin-Session + CSRF |
+
+Fehler: HTTP 400 mit `message` (und bei Eingabefehlern `errors`).
 
 # API-Vertrag (Sprint 2)
 
