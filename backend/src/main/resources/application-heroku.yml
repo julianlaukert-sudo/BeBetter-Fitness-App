@@ -1,0 +1,13 @@
+# Nur aktiv mit SPRING_PROFILES_ACTIVE=heroku (Heroku-Config-Var), lokal NICHT einschalten
+server:
+  # Heroku terminiert HTTPS am Router -> X-Forwarded-*-Header auswerten (korrekte https-Redirects)
+  forward-headers-strategy: framework
+  tomcat:
+    redirect-context-root: false
+  servlet:
+    session:
+      cookie:
+        # Admin-Session-Cookie nur über HTTPS, nicht per JavaScript lesbar
+        secure: true
+        http-only: true
+        same-site: lax
