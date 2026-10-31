@@ -6,13 +6,9 @@ export default function HomePage() {
   return (
     <section className="card">
       <h2>Welcome, {user.name}</h2>
-      {user.role === 'ADMIN'
-        ? <p>The admin area follows in Sprint 5.</p>
-        : <>
-            <p>Your personal training plan is ready to be created.</p>
-            <Link to="/training">Go to training</Link>{' '}
-            <Link to="/profile">My profile</Link>
-          </>}
+      <p>Open Training to load your plan and record your results.</p>
+      <Link to="/training">Go to training</Link>{' '}
+      <Link to="/profile">Edit my profile</Link>
     </section>
   );
 }
