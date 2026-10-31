@@ -178,7 +178,6 @@ export default function OnboardingPage() {
                 <Link to="/training">Go to training plan</Link>
                 <p><Link to="/profile">Edit profile</Link></p>
 
-                <p>Editing the profile follows in Sprint 5.</p>
             </section>
         );
     }
