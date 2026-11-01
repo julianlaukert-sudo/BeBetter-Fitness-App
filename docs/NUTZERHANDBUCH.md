@@ -47,3 +47,11 @@ Die Oberfläche ist englisch; die Schaltflächen sind unten in Anführungszeiche
 - „Saved, but the view could not be refreshed“ heißt: gespeichert, nur die Anzeige ist veraltet.
 - Fehlende Übungsdetails: später erneut versuchen, nicht neu registrieren.
 - Nach einem Backend-Neustart erneut anmelden; die Daten bleiben erhalten.
+
+## Wenn die Übungsquelle vorübergehend sperrt
+- Nicht mehrfach hintereinander neu laden und nicht viele Tabs gleichzeitig öffnen.
+- Eine Anbietersperre kann länger als eine Minute dauern; danach einmal „Try again“.
+- Beim ersten Plan kann der Ablauf blockiert sein, bis die Quelle wieder antwortet.
+- Bei vorhandenen Plänen bleiben Vorgaben und Markierungen erhalten.
+- Profil nicht neu anlegen, Konto nicht löschen, Datenbank nicht zurücksetzen.
+- Bleibt der Fehler, Zeitpunkt und sichtbare Meldung an das Team geben.
