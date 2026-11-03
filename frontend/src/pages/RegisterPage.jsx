@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { registerUser } from '../api/auth.js'
+import { Lock, Mail, User } from 'lucide-react'
+import AuthField from '../components/AuthField.jsx'
 import FormErrors from '../components/FormErrors.jsx'
 import { NAME_MAX_LENGTH, passwordChecks, registrationErrors } from '../utils/validation.js'
 
@@ -35,26 +37,22 @@ export default function RegisterPage() {
   }
 
   return (
-    <section className="card">
-      <h2>Sign up</h2>
+    <section className="card auth-card">
+      <header className="auth-card-header">
+        <h2>Sign up</h2>
+        <p>Create your account and get started.</p>
+      </header>
       <FormErrors message={message} fields={fields} />
       <form onSubmit={handleSubmit} noValidate>
         <fieldset disabled={busy}>
-          <label>
-            Name
-            <input type="text" value={form.name} onChange={update('name')} maxLength={NAME_MAX_LENGTH}
-              autoComplete="name" aria-invalid={Boolean(fields.name)} />
-          </label>
-          <label>
-            Email
-            <input type="email" value={form.email} onChange={update('email')} autoComplete="email"
-              aria-invalid={Boolean(fields.email)} />
-          </label>
-          <label>
-            Password
-            <input type="password" value={form.password} onChange={update('password')}
-              autoComplete="new-password" aria-invalid={Boolean(fields.password)} />
-          </label>
+          <AuthField label="Name" icon={User} type="text" value={form.name} onChange={update('name')}
+            maxLength={NAME_MAX_LENGTH} autoComplete="name" placeholder="Your name"
+            aria-invalid={Boolean(fields.name)} />
+          <AuthField label="Email" icon={Mail} type="email" value={form.email} onChange={update('email')}
+            autoComplete="email" placeholder="you@example.com" aria-invalid={Boolean(fields.email)} />
+          <AuthField label="Password" icon={Lock} type="password" reveal value={form.password}
+            onChange={update('password')} autoComplete="new-password" placeholder="8 to 64 characters"
+            aria-invalid={Boolean(fields.password)} />
           <ul className="password-checks">
             {passwordChecks(form.password).map((check) => (
               <li key={check.label} className={check.ok ? 'ok' : ''}>
@@ -62,15 +60,13 @@ export default function RegisterPage() {
               </li>
             ))}
           </ul>
-          <label>
-            Confirm password
-            <input type="password" value={form.confirm} onChange={update('confirm')}
-              autoComplete="new-password" aria-invalid={Boolean(fields.confirm)} />
-          </label>
-          <button type="submit">{busy ? 'Sending …' : 'Create account'}</button>
+          <AuthField label="Confirm password" icon={Lock} type="password" reveal value={form.confirm}
+            onChange={update('confirm')} autoComplete="new-password" placeholder="Repeat your password"
+            aria-invalid={Boolean(fields.confirm)} />
+          <button type="submit" className="btn-primary auth-submit">{busy ? 'Sending …' : 'Create account'}</button>
         </fieldset>
       </form>
-      <p>Already have an account? <Link to="/login">Log in</Link></p>
+      <p className="auth-switch">Already have an account? <Link to="/login">Log in</Link></p>
     </section>
   )
 }

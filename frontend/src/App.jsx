@@ -10,9 +10,11 @@ import TrainingPage from './pages/TrainingPage.jsx';
 import SessionPage from './pages/SessionPage.jsx';
 import './style.css';
 import ProfilePage from './pages/ProfilePage.jsx';
+import { CalendarDays, Target, TrendingUp } from 'lucide-react';
 import AppNav, { Brand } from './components/AppNav.jsx';
+import heroImage from './assets/auth-hero.webp';
 
-// Quellenhinweis der Übungsdaten
+// Quellenhinweis der Übungsdaten (Attribution, bleibt sichtbar)
 function Attribution() {
   return (
     <footer className="app-footer">
@@ -26,16 +28,33 @@ function Attribution() {
   );
 }
 
-// App-Layout mit Navigation
+// Angemeldet: App-Layout mit Navigation.
+// Gäste (Login, Registrierung): Bildbereich und Formular, ohne App-Tabs.
 function Shell({ children }) {
   const { isAuthenticated } = useAuth();
 
   if (!isAuthenticated) {
     return (
-      <div className="guest-shell">
-        <header className="guest-header"><Brand to="/login" /></header>
-        <main className="guest-main">{children}</main>
-        <Attribution />
+      <div className="auth-shell">
+        <section className="auth-hero">
+          <img className="auth-hero-image" src={heroImage} alt="" />
+          <Brand to="/login" />
+          <div className="auth-hero-content">
+            <h1 className="auth-headline">
+              More than just a plan. <span>Your personal progress.</span>
+            </h1>
+
+            <ul className="auth-benefits">
+              <li><CalendarDays size={24} aria-hidden="true" /> Personal training plan</li>
+              <li><TrendingUp size={24} aria-hidden="true" /> Track your progress</li>
+              <li><Target size={24} aria-hidden="true" /> Reach your goals</li>
+            </ul>
+          </div>
+        </section>
+        <div className="auth-panel">
+          <main className="auth-main">{children}</main>
+          <Attribution />
+        </div>
       </div>
     );
   }
@@ -51,16 +70,19 @@ function Shell({ children }) {
   );
 }
 
+// key: beim Kontowechsel wird der Formularzustand neu aufgebaut
 function OnboardingRoute() {
   const { user } = useAuth();
   return <OnboardingPage key={user.userId} />;
 }
 
+// key: beim Kontowechsel baut sich das Formular neu auf
 function ProfileRoute() {
   const { user } = useAuth();
   return <ProfilePage key={user.userId} />;
 }
 
+// key: beim Kontowechsel bleibt kein alter Plan im Zustand
 function WithPlans({ children }) {
   const { user } = useAuth();
   return <PlanProvider key={user?.userId ?? 'guest'}>{children}</PlanProvider>;
