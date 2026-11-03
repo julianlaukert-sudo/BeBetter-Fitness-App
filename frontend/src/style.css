@@ -67,7 +67,7 @@ img { max-width: 100%; height: auto; }
 
 :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
 
-/* ---------- Formulare und Buttons ---------- */
+/* Formulare und Buttons  */
 fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
 legend { padding: 0; margin-bottom: var(--space-2); font-size: 0.85rem; font-weight: 600; color: var(--color-muted); }
 
@@ -216,7 +216,7 @@ dialog img { display: block; margin: var(--space-3) 0; border-radius: var(--radi
 .brand-tagline { margin-top: 5px; font-size: 0.6rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-muted); }
 
 /* Lucide zeichnet die Hantel diagonal; im Logo und in der Navigation liegt sie waagerecht */
-.icon-dumbbell { transform: rotate(-45deg); }
+.icon-dumbbell { transform: rotate(45deg); }
 
 /* App-Layout */
 .app-shell { min-height: 100vh; min-height: 100dvh; }
