@@ -2,7 +2,7 @@ package de.bebetter.backend.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-
+//KI-Log Nr. 11
 public enum Gender {
     MALE("male"), FEMALE("female"), DIVERSE("diverse");
 

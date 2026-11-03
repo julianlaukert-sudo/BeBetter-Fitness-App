@@ -9,7 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
-
+//KI-Log Nr. 10, 11
 // Tabellen- und Spaltennamen bleiben deutsch (V2__nutzer.sql).
 @Entity
 @Table(name = "nutzer")

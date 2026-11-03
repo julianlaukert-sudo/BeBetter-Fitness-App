@@ -7,7 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
+//KI-Log Nr. 11
 /** Reine Profilprüfung ohne Datenbankzugriff */
 public final class ProfileRules {
 

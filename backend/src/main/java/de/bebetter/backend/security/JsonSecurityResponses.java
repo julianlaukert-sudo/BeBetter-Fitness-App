@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
-
+//KI-Log Nr. 11
 // JSON-Antworten für fehlende/ungültige Tokens und fehlende Rechte (Konvention: HTTP 400 + message)
 public final class JsonSecurityResponses {
 

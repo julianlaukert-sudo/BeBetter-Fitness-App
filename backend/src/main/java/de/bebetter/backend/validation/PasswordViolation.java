@@ -1,6 +1,5 @@
-
 package de.bebetter.backend.validation;
-
+//KI-Log Nr. 10
 /**
  * Mögliche Verstöße gegen die Passwortregeln.
  */
