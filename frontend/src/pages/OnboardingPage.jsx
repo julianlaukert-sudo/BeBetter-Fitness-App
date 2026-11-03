@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { profileErrors, profileBody } from '../utils/validation.js';
 import { loadDraft, saveDraft, clearDraft } from '../utils/onboardingDraft.js';
+import { Check, Dumbbell, Flame, HeartPulse } from 'lucide-react';
 import FormErrors from '../components/FormErrors.jsx';
 
 const DAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
@@ -10,6 +11,8 @@ const DAY_LABELS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Sat
 const GENDERS = [['male', 'Male'], ['female', 'Female'], ['diverse', 'Diverse']];
 const GOALS = [['muscle_gain', 'Muscle gain'], ['fat_loss', 'Fat loss'], ['health', 'Health']];
 const LEVELS = [['beginner', 'Beginner'], ['advanced', 'Advanced']];
+const GOAL_ICONS = { muscle_gain: Dumbbell, fat_loss: Flame, health: HeartPulse };
+const STEPS = ['Personal details', 'Training', 'Review'];
 
 const FIELD_LABELS = {
     age: 'Age',
@@ -23,6 +26,33 @@ const FIELD_LABELS = {
 
 const text = (list, value) =>
     (list.find(([v]) => v === value) || [value, value])[1];
+
+// Nur für die Anzeige: Tage in Wochenreihenfolge und ausgeschrieben
+const dayText = days =>
+    DAYS.filter(d => days.includes(d)).map(d => DAY_LABELS[DAYS.indexOf(d)]).join(', ');
+
+// Übersicht der Profildaten (Schritt 3 und nach dem Speichern)
+function Summary({ personal, training }) {
+    const rows = [
+        ['Age', `${personal.age} years`],
+        ['Height', `${personal.height} cm`],
+        ['Weight', `${personal.weight} kg`],
+        ['Gender', text(GENDERS, personal.gender)],
+        ['Goal', text(GOALS, training.goal)],
+        ['Fitness level', text(LEVELS, training.fitnessLevel)],
+        ['Training days', dayText(training.trainingDays)],
+    ];
+    return (
+        <dl className="summary">
+            {rows.map(([term, value]) => (
+                <div key={term}>
+                    <dt>{term}</dt>
+                    <dd>{value}</dd>
+                </div>
+            ))}
+        </dl>
+    );
+}
 
 export default function OnboardingPage() {
     const { user, authorized, markProfileCompleted } = useAuth();
@@ -158,33 +188,77 @@ export default function OnboardingPage() {
         );
     }
 
+    // Auswahlkarten (Radio-Buttons): gleiche Werte wie die bisherigen Auswahllisten
+    function choices(name, label, values, icons = {}) {
+        return (
+            <fieldset className="choice-group">
+                <legend>{label}</legend>
+                <div className="choice-grid">
+                    {values.map(([value, t]) => {
+                        const Icon = icons[value];
+                        return (
+                            <label key={value} className="choice">
+                                <input
+                                    type="radio"
+                                    name={name}
+                                    value={value}
+                                    checked={form[name] === value}
+                                    onChange={() => change(name, value)}
+                                />
+                                {Icon && (
+                                    <Icon
+                                        size={22}
+                                        aria-hidden="true"
+                                        className={Icon === Dumbbell ? 'icon-dumbbell' : undefined}
+                                    />
+                                )}
+                                <span>{t}</span>
+                            </label>
+                        );
+                    })}
+                </div>
+            </fieldset>
+        );
+    }
+
     if (saved) {
         return (
-            <section className="card">
+            <section className="card onboarding">
                 <h2>Profile saved</h2>
 
-                <p>
-                    {saved.personal.age} years, {text(GENDERS, saved.personal.gender)},{' '}
-                    {saved.personal.height} cm, {saved.personal.weight} kg
-                </p>
-
-                <p>
-                    {text(GOALS, saved.training.goal)},{' '}
-                    {text(LEVELS, saved.training.fitnessLevel)},{' '}
-                    {saved.training.trainingDays.join(', ')}
-                </p>
+                <Summary personal={saved.personal} training={saved.training} />
 
                 {/*Link zur Trainingsseite */}
-                <Link to="/training">Go to training plan</Link>
-                <p><Link to="/profile">Edit profile</Link></p>
-
+                <div className="form-actions">
+                    <Link className="link-button" to="/profile">Edit profile</Link>
+                    <Link className="link-button btn-primary" to="/training">Go to training plan</Link>
+                </div>
             </section>
         );
     }
 
     return (
-        <section className="card">
-            <h2>Personal profile – step {step} of 3</h2>
+        <section className="card onboarding">
+            <header className="onboarding-header">
+                <h2>Personal profile</h2>
+                <ol className="steps" aria-label={`Step ${step} of 3`}>
+                    {STEPS.map((label, i) => {
+                        const number = i + 1;
+                        return (
+                            <li
+                                key={label}
+                                className={number < step ? 'done' : undefined}
+                                aria-current={number === step ? 'step' : undefined}
+                            >
+                                <span className="step-number">
+                                    {number < step ? <Check size={14} aria-hidden="true" /> : number}
+                                </span>
+                                <span className="step-label">{label}</span>
+                            </li>
+                        );
+                    })}
+                </ol>
+            </header>
 
             <FormErrors
                 message={message}
@@ -209,7 +283,7 @@ export default function OnboardingPage() {
             <form onSubmit={submit} noValidate>
                 <fieldset disabled={busy || !ready}>
                     {step === 1 && (
-                        <>
+                        <div className="form-grid">
                             {['age', 'height', 'weight'].map(name => (
                                 <label key={name}>
                                     {{
@@ -227,78 +301,77 @@ export default function OnboardingPage() {
                             ))}
 
                             {select('gender', 'Gender', GENDERS)}
-                        </>
+                        </div>
                     )}
 
                     {step === 2 && (
                         <>
-                            {select('goal', 'Goal', GOALS)}
-                            {select('fitnessLevel', 'Fitness level', LEVELS)}
+                            {choices('goal', 'Goal', GOALS, GOAL_ICONS)}
+                            {choices('fitnessLevel', 'Fitness level', LEVELS)}
 
-                            <p>
-                                Select three training days with at least one rest day in between.
-                            </p>
+                            <fieldset className="choice-group">
+                                <legend>Training days</legend>
+                                <p className="hint">
+                                    Select three training days with at least one rest day in between.
+                                </p>
 
-                            <div className="day-options">
-                                {DAYS.map((day, i) => (
-                                    <label key={day}>
-                                        <input
-                                            type="checkbox"
-                                            checked={form.trainingDays.includes(day)}
-                                            onChange={e =>
-                                                change(
-                                                    'trainingDays',
-                                                    e.target.checked
-                                                        ? [...form.trainingDays, day]
-                                                        : form.trainingDays.filter(d => d !== day)
-                                                )
-                                            }
-                                        />
-                                        {DAY_LABELS[i]}
-                                    </label>
-                                ))}
-                            </div>
+                                <div className="day-options">
+                                    {DAYS.map((day, i) => (
+                                        <label key={day}>
+                                            <input
+                                                type="checkbox"
+                                                checked={form.trainingDays.includes(day)}
+                                                onChange={e =>
+                                                    change(
+                                                        'trainingDays',
+                                                        e.target.checked
+                                                            ? [...form.trainingDays, day]
+                                                            : form.trainingDays.filter(d => d !== day)
+                                                    )
+                                                }
+                                            />
+                                            {DAY_LABELS[i]}
+                                        </label>
+                                    ))}
+                                </div>
+                            </fieldset>
                         </>
                     )}
 
                     {step === 3 && (
                         <>
                             <p>Please check your data:</p>
-
-                            <p>
-                                {form.age} years, {form.height} cm, {form.weight} kg,{' '}
-                                {text(GENDERS, form.gender)}
-                            </p>
-
-                            <p>
-                                {text(GOALS, form.goal)},{' '}
-                                {text(LEVELS, form.fitnessLevel)},{' '}
-                                {form.trainingDays.join(', ')}
-                            </p>
+                            <Summary
+                                personal={form}
+                                training={form}
+                            />
                         </>
                     )}
 
-                    {step > 1 && (
-                        <button
-                            type="button"
-                            onClick={() => {
-                                setFields({});
-                                setStep(step - 1);
-                            }}
-                        >
-                            Back
-                        </button>
-                    )}
+                    <div className="form-actions">
+                        {step > 1 && (
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setFields({});
+                                    setStep(step - 1);
+                                }}
+                            >
+                                Back
+                            </button>
+                        )}
 
-                    {step < 3 ? (
-                        <button type="button" onClick={next}>
-                            Next
-                        </button>
-                    ) : (
-                        <button type="submit">
-                            {busy ? 'Saving...' : 'Save profile'}
-                        </button>
-                    )}
+                        {/* key: getrennte Buttons, damit der Klick auf "Next" nie als "Save profile" gilt */}
+                        {step < 3 ? (
+                            <button key="next" type="button" className="btn-primary" onClick={next}>
+                                Next
+                            </button>
+                        ) : (
+                            <button key="save" type="submit" className="btn-primary">
+                                {busy ? 'Saving...' : 'Save profile'}
+                            </button>
+                        )}
+                    </div>
                 </fieldset>
             </form>
 
