@@ -5,6 +5,8 @@ import { useAuth } from '../context/AuthContext.jsx'
 import { validateEmail } from '../utils/validation.js'
 import { useSearchParams } from 'react-router-dom';
 import { openAdmin } from '../api/adminSso.js';
+import { Lock, Mail } from 'lucide-react';
+import AuthField from '../components/AuthField.jsx';
 
 export default function LoginPage() {
     const { login } = useAuth()
@@ -59,10 +61,14 @@ export default function LoginPage() {
     }
 
     return (
-        <section className="card">
-            <h2>Log in</h2>
-        {params.get('loggedOut') === '1' && <p role="status">Admin logged out.</p>}
-        {params.get('adminError') === '1' && (<p role="alert">Admin login failed. Please log in again.</p>)}
+        <section className="card auth-card">
+            <header className="auth-card-header">
+                <h2>Log in</h2>
+                <p>Welcome back. Log in to continue with your plan.</p>
+            </header>
+
+            {params.get('loggedOut') === '1' && <p role="status">Admin logged out.</p>}
+            {params.get('adminError') === '1' && (<p role="alert">Admin login failed. Please log in again.</p>)}
 
             {justRegistered && (
                 <p className="success">
@@ -74,35 +80,36 @@ export default function LoginPage() {
 
             <form onSubmit={handleSubmit} noValidate>
                 <fieldset disabled={busy}>
-                    <label>
-                        Email
-                        <input
-                            type="email"
-                            value={form.email}
-                            onChange={update('email')}
-                            autoComplete="email"
-                            aria-invalid={Boolean(fields.email)}
-                        />
-                    </label>
+                    <AuthField
+                        label="Email"
+                        icon={Mail}
+                        type="email"
+                        value={form.email}
+                        onChange={update('email')}
+                        autoComplete="email"
+                        placeholder="you@example.com"
+                        aria-invalid={Boolean(fields.email)}
+                    />
 
-                    <label>
-                        Password
-                        <input
-                            type="password"
-                            value={form.password}
-                            onChange={update('password')}
-                            autoComplete="current-password"
-                            aria-invalid={Boolean(fields.password)}
-                        />
-                    </label>
+                    <AuthField
+                        label="Password"
+                        icon={Lock}
+                        type="password"
+                        reveal
+                        value={form.password}
+                        onChange={update('password')}
+                        autoComplete="current-password"
+                        placeholder="Your password"
+                        aria-invalid={Boolean(fields.password)}
+                    />
 
-                    <button type="submit">
+                    <button type="submit" className="btn-primary auth-submit">
                         {busy ? 'Logging in …' : 'Log in'}
                     </button>
                 </fieldset>
             </form>
 
-            <p>
+            <p className="auth-switch">
                 No account yet? <Link to="/register">Sign up</Link>
             </p>
         </section>
