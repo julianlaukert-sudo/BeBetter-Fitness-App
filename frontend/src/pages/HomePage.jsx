@@ -210,6 +210,7 @@ export default function HomePage() {
   const { user, authorized } = useAuth();
   const { plan, busy, error, refresh } = usePlan();
   const [goal, setGoal] = useState(null);
+  const name = String(user?.name ?? '').trim();
   const reload = () => refresh().catch(() => {});
 
   // Nur laden, wenn noch kein Plan im Context liegt (wie SessionPage)
@@ -222,7 +223,7 @@ export default function HomePage() {
       .then(data => { if (active) setGoal(GOALS[data?.training?.goal] ?? null); })
       .catch(() => {});
     return () => { active = false; };
-  }, [user.userId]);
+  }, [user?.userId]);
 
   const next = plan ? nextSession(plan) : null;
   const days = weekDays(plan);
@@ -233,7 +234,7 @@ export default function HomePage() {
     <div className="dashboard">
       <header className="dash-header">
         {plan && <p className="dash-date">{weekdayName(plan.today)}, {shortDate(plan.today)}</p>}
-        <h1 className={`dash-title${user.name.length > 20 ? ' dash-title--long' : ''}`}>Hello {user.name},</h1>
+        <h1 className={`dash-title${name.length > 20 ? ' dash-title--long' : ''}`}>{name ? `Hello ${name},` : 'Hello,'}</h1>
         <p className="dash-sub">{trainingToday ? 'Ready for today\'s training?' : 'Here is your week at a glance.'}</p>
       </header>
 
