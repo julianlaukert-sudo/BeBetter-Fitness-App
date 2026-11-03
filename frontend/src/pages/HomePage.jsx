@@ -8,7 +8,7 @@ import { usePlan } from '../context/PlanContext.jsx';
 import { loadProfile } from '../api/profile.js';
 import ApiDownBanner from '../components/ApiDownBanner.jsx';
 import {
-  STATUS_LABELS, nextSession, shortDate, timing, weekDays, weekStats, weekdayName,
+    STATUS_LABELS, nextSession, shortDate, statusLabel, timing, weekDays, weekStats, weekdayName,
 } from '../utils/planSummary.js';
 import nextImage from '../assets/dashboard-next.webp';
 import goalImage from '../assets/goal.webp';
@@ -20,6 +20,9 @@ const GOALS = {
 };
 
 const exerciseCount = n => `${n} ${n === 1 ? 'exercise' : 'exercises'}`;
+
+// Klassenname aus dem Status; fehlende oder unbekannte Werte werden zu "unknown"
+const statusKey = status => (Object.hasOwn(STATUS_LABELS, status) ? status.toLowerCase() : 'unknown');
 
 function NextTraining({ plan, session }) {
   if (!session) {
@@ -45,11 +48,25 @@ function NextTraining({ plan, session }) {
   let action = 'View session';
   if (session.available) action = started ? 'Continue training' : 'Start training';
   let note = '';
-  if (!session.available) {
-    note = when === 'later'
-      ? `Recording opens on ${weekdayName(session.date)}.`
-      : 'This session cannot be edited right now.';
-  } else if (when === 'earlier') {
+    if (!session) {
+      // "Alles erfasst" nur, wenn jede Einheit einen bekannten Ergebnisstatus hat
+      const sessions = plan.sessions ?? [];
+      const allRecorded = sessions.length > 0
+        && sessions.every(s => ['DONE', 'PARTIAL', 'FAILED'].includes(s.status));
+      return (
+        <section className="media-card next-card" aria-labelledby="next-title">
+          <img className="media-card-image" src={nextImage} alt="" />
+          <div className="media-card-body">
+            <p className="eyebrow">Next training</p>
+            <h2 id="next-title">{allRecorded ? 'All sessions are recorded' : 'No session to start'}</h2>
+            <p className="next-note">
+              {allRecorded ? 'Every session of this week has a saved result.' : 'Open the training plan to see your sessions.'}
+            </p>
+            <Link className="link-button" to="/training">View training plan</Link>
+          </div>
+        </section>
+      );
+    } else if (when === 'earlier') {
     note = 'Still open. You can record it until Sunday.';
   }
 
@@ -91,7 +108,7 @@ function WeekCard({ plan, days }) {
         {days.map(day => {
           const name = weekdayName(day.date);
           const label = day.session
-            ? `${name} ${day.day}: Session ${day.session.label}, ${STATUS_LABELS[day.session.status]}`
+            ? `${name} ${day.day}: Session ${day.session.label},${statusLabel(day.session.status)}`
             : `${name} ${day.day}: rest day`;
           const className = `day day--${day.state}${day.isToday ? ' day--today' : ''}`;
           const content = (
@@ -171,7 +188,7 @@ function SessionList({ sessions }) {
         {sessions.map(s => (
           <li key={s.sessionId}>
             <Link className="session-row" to={`/session/${s.sessionId}`}>
-              <span className={`session-row-icon session-row-icon--${s.status.toLowerCase()}`} aria-hidden="true">
+                <span className={`session-row-icon session-row-icon--${statusKey(s.status)}`} aria-hidden="true">
                 {s.status === 'DONE' && <Check size={18} strokeWidth={2.5} />}
                 {s.status === 'PARTIAL' && <Check size={18} strokeWidth={2.5} />}
                 {s.status === 'FAILED' && <X size={18} strokeWidth={2.5} />}
@@ -180,7 +197,7 @@ function SessionList({ sessions }) {
                 <strong>Session {s.label}</strong>
                 <span>{weekdayName(s.date).slice(0, 3)} {shortDate(s.date)} · {exerciseCount(s.exercises.length)}</span>
               </span>
-              <span className={`status-text status-text--${s.status.toLowerCase()}`}>{STATUS_LABELS[s.status]}</span>
+              <span className={`status-text status-text--${statusKey(s.status)}`}>{statusLabel(s.status)}</span>
               <ChevronRight size={18} aria-hidden="true" className="row-chevron" />
             </Link>
           </li>

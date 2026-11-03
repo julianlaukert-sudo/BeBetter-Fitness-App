@@ -73,7 +73,7 @@ export function weekDays(plan) {
       day: Number(date.slice(8, 10)),
       isToday: date === plan.today,
       session,
-      state: session ? (DAY_STATES[session.status] ?? 'open') : 'none',
+      state: session ? (Object.hasOwn(DAY_STATES, session.status) ? DAY_STATES[session.status] : 'unknown') : 'none',
     };
   });
 }
@@ -92,4 +92,62 @@ export function weekStats(plan) {
     exercisesCompleted: exercises.filter(e => e.mark?.done).length,
     recordedPercent: exercises.length ? Math.round((recorded / exercises.length) * 100) : 0,
   };
+}
+
+// Fortschritt einer Einheit: erfasst = Ergebnis gespeichert (Done oder Not done)
+export function sessionProgress(session) {
+  const exercises = session?.exercises ?? [];
+  const recorded = exercises.filter(e => e.mark).length;
+  return {
+    total: exercises.length,
+    recorded,
+    percent: exercises.length ? Math.round((recorded / exercises.length) * 100) : 0,
+  };
+}
+
+// Anzeigestatus einer Einheit.zeigen zusätzlich die Lage zum heutigen Datum
+const UNKNOWN_STATUS = 'Status unknown';
+
+export function sessionState(session, today) {
+  const status = session.status;
+  if (!Object.hasOwn(STATUS_LABELS, status)) return { key: 'unknown', label: UNKNOWN_STATUS };
+  if (status !== 'OPEN') return { key: DAY_STATES[status], label: STATUS_LABELS[status] };
+  if (!today) return { key: 'open', label: STATUS_LABELS.OPEN };
+  const when = timing(session, today);
+  if (when === 'today') return { key: 'today', label: 'Today' };
+  if (when === 'later') return { key: 'planned', label: 'Planned' };
+  return { key: 'open', label: STATUS_LABELS.OPEN };
+}
+
+// Bearbeitbarkeit laut Backend. Gesperrte kommende Einheiten öffnen an ihrem Tag.
+export function availability(session, today) {
+  if (session.available) return { open: true, text: 'Recording open until Sunday' };
+  if (today && timing(session, today) === 'later') {
+    return { open: false, text: `Opens ${weekdayName(session.date)}, ${shortDate(session.date)}` };
+  }
+  return { open: false, text: 'Recording closed' };
+}
+
+// Anzeige einer Übung in der Trainingsübersicht: Name, Satzschema und Zielgewicht
+export function exerciseTarget(exercise) {
+  const weight = Number(exercise.weight);
+  let load = '';
+  if (exercise.bodyweight) {
+    load = 'Bodyweight';
+  } else if (exercise.weight != null && Number.isFinite(weight)) {
+    load = `${weight} kg`;
+    if (exercise.equipment === 'dumbbell') load += ' per hand';
+  }
+  return {
+    name: exercise.name || `Exercise ${exercise.exerciseId}`,
+    scheme: `${exercise.sets} × ${String(exercise.reps).replace('-', '–')}`,
+    load,
+  };
+}
+
+// Statustext für bekannte und unbekannte Statuswerte
+export function statusLabel(status) {
+  return Object.hasOwn(STATUS_LABELS, status)
+    ? STATUS_LABELS[status]
+    : 'Status unknown';
 }
