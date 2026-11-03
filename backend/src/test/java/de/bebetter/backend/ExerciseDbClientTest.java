@@ -13,7 +13,7 @@ import org.springframework.web.client.RestClient;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.*;
-
+// KI-Log Nr. 12
 /** Kontrollierte HTTP-Antworten, kein Internet nötig. */
 class ExerciseDbClientTest {
 

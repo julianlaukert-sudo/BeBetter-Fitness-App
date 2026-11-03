@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from 'react'
 import { login as loginRequest, logout as logoutRequest } from '../api/auth.js'
 import { ApiError, request } from '../api/client.js'
-
+// KI-Log Nr. 10, 11, 13, 18
 const STORAGE_KEY = 'bebetter.session'
 const INVALID_TOKEN_MESSAGE = 'Token is wrong.'
 

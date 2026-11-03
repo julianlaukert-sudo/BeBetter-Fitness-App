@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+// KI-Log Nr. 12, 15, 17
 @Service
 public class PlanGenerator {
 

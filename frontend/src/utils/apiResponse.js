@@ -1,4 +1,5 @@
 // Fehlerklasse für alle Backendaufrufe
+// KI-Log Nr. 19
 export class ApiError extends Error {
   constructor(message, status, data) {
     super(message);

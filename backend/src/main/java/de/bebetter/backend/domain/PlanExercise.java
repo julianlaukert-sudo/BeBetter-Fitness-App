@@ -12,7 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
-
+// KI-Log Nr. 12, 15
 /** Gespeicherte Vorgabe einer Übung in einer Einheit (PDF: PlanUebung). */
 @Entity
 @Table(name = "plan_uebung")

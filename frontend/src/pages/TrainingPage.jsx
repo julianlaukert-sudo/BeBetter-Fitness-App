@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { usePlan } from '../context/PlanContext.jsx';
 import ApiDownBanner from '../components/ApiDownBanner.jsx';
 import SessionCard from '../components/SessionCard.jsx';
-
+// KI-Log Nr. 13, 16
 export default function TrainingPage() {
   const { plan, busy, error, refresh } = usePlan();
   // Fehler werden über "error" angezeigt; hier nur abfangen

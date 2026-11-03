@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { adminAction, submitAdmin } from './adminBridge.js';
-
+// KI-Log Nr. 18
 test('SSO uses a POST body and never puts the token into a URL', () => {
   let submitted = false;
   let appended;

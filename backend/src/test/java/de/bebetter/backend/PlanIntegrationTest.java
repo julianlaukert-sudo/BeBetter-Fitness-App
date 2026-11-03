@@ -29,7 +29,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+// KI-Log Nr. 12, 15
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")

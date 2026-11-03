@@ -1,4 +1,5 @@
 // Wandelt die Serverantwort in editierbare Formularwerte
+// KI-Log Nr. 17
 export function profileForm(profile) {
   return {
     age: String(profile.personal.age),

@@ -5,7 +5,7 @@ import de.bebetter.backend.service.WeekChangeJob;
 import de.bebetter.backend.service.WeekChangeService;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-
+// KI-Log Nr. 15
 import static org.mockito.Mockito.*;
 
 class WeekChangeJobTest {

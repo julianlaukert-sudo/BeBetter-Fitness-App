@@ -3,7 +3,7 @@ package de.bebetter.backend.dto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-
+// KI-Log Nr. 12, 15
 public record PlanResponse(Long planId, LocalDate weekStart, LocalDate weekEnd,
                            LocalDate today, boolean exerciseDataAvailable,
                            List<Session> sessions) {

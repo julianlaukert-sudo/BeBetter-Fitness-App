@@ -13,7 +13,7 @@ import ProfilePage from './pages/ProfilePage.jsx';
 import { CalendarDays, Target, TrendingUp } from 'lucide-react';
 import AppNav, { Brand } from './components/AppNav.jsx';
 import heroImage from './assets/auth-hero.webp';
-
+// KI-Log Nr. 9, 10, 11, 13, 17
 // Quellenhinweis der Übungsdaten (Attribution, bleibt sichtbar)
 function Attribution() {
   return (

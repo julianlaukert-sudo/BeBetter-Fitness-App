@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { profileErrors, profileBody } from '../utils/validation.js';
 import { loadDraft, saveDraft, clearDraft } from '../utils/onboardingDraft.js';
 import FormErrors from '../components/FormErrors.jsx';
-
+// KI-Log Nr. 11, 13, 17
 const DAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 const DAY_LABELS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const GENDERS = [['male', 'Male'], ['female', 'Female'], ['diverse', 'Diverse']];

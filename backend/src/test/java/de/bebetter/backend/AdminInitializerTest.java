@@ -14,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
+// KI-Log Nr. 18
 class AdminInitializerTest {
 
     final UserRepository users = mock(UserRepository.class);

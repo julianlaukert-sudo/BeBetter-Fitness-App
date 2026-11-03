@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { usePlan } from '../context/PlanContext.jsx';
 import { saveMark } from '../api/marks.js';
 import { markPayload } from '../utils/markValidation.js';
-
+// KI-Log Nr. 16
 export default function MarkForm({ sessionId, exercise, available }) {
   const { authorized } = useAuth();
   const { refresh } = usePlan();

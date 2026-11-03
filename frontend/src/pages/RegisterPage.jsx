@@ -5,7 +5,7 @@ import { Lock, Mail, User } from 'lucide-react'
 import AuthField from '../components/AuthField.jsx'
 import FormErrors from '../components/FormErrors.jsx'
 import { NAME_MAX_LENGTH, passwordChecks, registrationErrors } from '../utils/validation.js'
-
+// KI-Log Nr. 9, 11
 export default function RegisterPage() {
   const navigate = useNavigate()
   const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' })

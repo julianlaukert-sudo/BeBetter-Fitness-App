@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { markPayload } from './markValidation.js';
-
+// KI-Log Nr. 16
 const ex = { planExerciseId: 42, bodyweight: false };
 const values = { done: 'false', weight: '3,5', reps: '0' };
 

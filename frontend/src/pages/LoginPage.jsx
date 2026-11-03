@@ -7,7 +7,7 @@ import { useSearchParams } from 'react-router-dom';
 import { openAdmin } from '../api/adminSso.js';
 import { Lock, Mail } from 'lucide-react';
 import AuthField from '../components/AuthField.jsx';
-
+// KI-Log Nr. 9, 11, 13, 19
 export default function LoginPage() {
     const { login } = useAuth()
     const navigate = useNavigate()

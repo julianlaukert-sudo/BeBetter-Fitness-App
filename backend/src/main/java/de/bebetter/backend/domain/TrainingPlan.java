@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
+// KI-Log Nr. 12, 15
 /** Wochenplan eines Nutzers (PDF: Trainingsplan). */
 @Entity
 @Table(name = "trainingsplan")

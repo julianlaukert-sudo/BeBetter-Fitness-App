@@ -3,7 +3,7 @@ import { createServer } from 'node:net';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
-
+// KI-Log Nr. 20
 const root = fileURLToPath(new URL('..', import.meta.url));
 const pkg = JSON.parse(await readFile(resolve(root, 'package.json'), 'utf8'));
 const procfile = await readFile(resolve(root, 'Procfile'), 'utf8');

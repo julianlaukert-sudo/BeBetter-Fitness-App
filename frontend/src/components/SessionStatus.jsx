@@ -1,3 +1,4 @@
+// KI-Log Nr. 16
 const LABELS = {
   OPEN: 'Open',
   IN_PROGRESS: 'Started',

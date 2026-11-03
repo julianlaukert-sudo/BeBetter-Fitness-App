@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import SessionStatus from './SessionStatus.jsx';
-
+// KI-Log Nr. 13, 16
 export default function SessionCard({ session }) {
   const date = new Date(`${session.date}T12:00:00`).toLocaleDateString('en-GB',
     { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });

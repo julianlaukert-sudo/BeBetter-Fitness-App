@@ -1,3 +1,4 @@
+// KI-Log Nr. 11
 const DEFAULT_LABELS = {
   name: 'Name',
   email: 'Email',
