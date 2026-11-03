@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Set;
-
+// KI-Log Nr. 12
 /**
  * Planregeln. Startgewichte sind technische Modellwerte,
  * keine gemessenen Kraftwerte.

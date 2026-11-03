@@ -4,7 +4,7 @@ import { usePlan } from '../context/PlanContext.jsx';
 import ExerciseRow from '../components/ExerciseRow.jsx';
 import SessionStatus from '../components/SessionStatus.jsx';
 import ApiDownBanner from '../components/ApiDownBanner.jsx';
-
+// KI-Log Nr. 13, 16
 export default function SessionPage() {
   const { id } = useParams();
   const { plan, busy, error, refresh } = usePlan();

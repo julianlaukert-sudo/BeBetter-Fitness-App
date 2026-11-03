@@ -8,7 +8,7 @@ import de.bebetter.backend.repository.ProfileRepository;
 import de.bebetter.backend.repository.TrainingPlanRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+// KI-Log Nr. 15, 17
 /**
  * Wochenwechsel: alte Woche abschließen, dann entweder unverändert kopieren.
  * Schlägt die Neuplanung fehl (z. B. ExerciseDB), wird alles zurückgerollt.

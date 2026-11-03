@@ -10,7 +10,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.test.context.ActiveProfiles;
-
+// KI-Log Nr. 10
 @ActiveProfiles("test")
 @SpringBootTest
 @Transactional

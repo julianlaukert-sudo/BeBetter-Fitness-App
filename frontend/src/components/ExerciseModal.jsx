@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-
+// KI-Log Nr. 13
 // Natives dialog: Schließen per Button oder Escape
 export default function ExerciseModal({ exercise, close }) {
   const dialog = useRef(null);

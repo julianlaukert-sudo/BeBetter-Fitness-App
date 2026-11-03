@@ -9,7 +9,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+// KI-Log Nr. 18
 class AdminGraphQlIntegrationTest extends Sprint5Support {
 
     // GraphQL antwortet ggf. asynchron -> bei Bedarf asyncDispatch

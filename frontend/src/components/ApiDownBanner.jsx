@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-
+// KI-Log Nr. 13
 const TEXTS = {
   'Exercises could not be loaded.':
     'Exercises are currently unavailable. Your profile is saved. Please try again later.',

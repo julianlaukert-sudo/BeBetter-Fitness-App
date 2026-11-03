@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { apiResponse } from './apiResponse.js';
-
+// KI-Log Nr. 19
 test('valid success data and false values remain unchanged', () => {
   assert.deepEqual(apiResponse('{"done":false,"reps":0}', 200, true), { done: false, reps: 0 });
 });

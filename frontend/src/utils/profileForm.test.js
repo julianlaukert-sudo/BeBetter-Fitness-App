@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { profileForm } from './profileForm.js';
 import { profileBody, profileErrors } from './validation.js';
-
+// KI-Log Nr. 17
 test('server profile becomes editable strings without sharing day array', () => {
   const data = {
     personal: { age: 23, gender: 'male', height: 180, weight: 78.5 },

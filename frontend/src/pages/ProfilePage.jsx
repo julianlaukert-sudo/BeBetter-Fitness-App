@@ -6,7 +6,7 @@ import { profileErrors, profileBody } from '../utils/validation.js';
 import { profileForm } from '../utils/profileForm.js';
 import ProfileFields, { FIELD_LABELS } from '../components/ProfileFields.jsx';
 import FormErrors from '../components/FormErrors.jsx';
-
+// KI-Log Nr. 17
 export default function ProfilePage() {
   const { user, authorized } = useAuth();
   const [saved, setSaved] = useState(null);

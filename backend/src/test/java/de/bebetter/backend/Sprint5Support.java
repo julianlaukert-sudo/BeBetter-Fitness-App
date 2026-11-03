@@ -37,7 +37,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+// KI-Log Nr. 17
 /** Gemeinsame Testbasis für Sprint 5 (ohne äußere Testtransaktion, Aufräumen in @AfterEach). */
 @SpringBootTest
 @AutoConfigureMockMvc

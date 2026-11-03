@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useRef, useState } from 'react';
 import { useAuth } from './AuthContext.jsx';
 import { loadPlan, createPlan } from '../api/plan.js';
-
+// KI-Log Nr. 13, 16
 const Context = createContext(null);
 
 export function PlanProvider({ children }) {

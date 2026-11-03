@@ -14,7 +14,7 @@ import java.time.ZoneId;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+// KI-Log Nr. 18
 @Service
 public class AdminService {
 

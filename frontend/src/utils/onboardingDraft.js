@@ -1,5 +1,6 @@
 // Browserentwurf des Onboardings, getrennt pro Nutzer-ID.
 // Enthält nur Profildaten – keine Passwörter, keine Tokens.
+// KI-Log Nr. 11
 const key = id => `bebetter.onboarding.${id}`;
 const DAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 

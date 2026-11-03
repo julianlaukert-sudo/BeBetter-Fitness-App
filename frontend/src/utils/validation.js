@@ -1,3 +1,4 @@
+// KI-Log Nr. 9, 11
 const EMAIL_PATTERN = /^[^@\s]+@[^@\s]+\.[^@\s.]{2,}$/
 export const NAME_MIN_LENGTH = 2
 export const NAME_MAX_LENGTH = 50

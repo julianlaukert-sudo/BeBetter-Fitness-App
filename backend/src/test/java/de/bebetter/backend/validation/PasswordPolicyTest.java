@@ -4,7 +4,7 @@ package de.bebetter.backend.validation;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
-
+// KI-Log Nr. 10
 class PasswordPolicyTest {
 
     @Test

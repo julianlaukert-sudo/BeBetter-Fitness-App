@@ -1,5 +1,5 @@
 import { ApiError, apiResponse } from '../utils/apiResponse.js';
-
+// KI-Log Nr. 9, 11, 13, 19
 export { ApiError };
 export const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 const DEFAULT_TIMEOUT = 8000; // Kontoanfragen: 8 s; Plananfragen übergeben 60 s

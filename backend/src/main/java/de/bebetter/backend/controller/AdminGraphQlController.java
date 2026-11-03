@@ -9,7 +9,7 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
-
+// KI-Log Nr. 18
 /** GraphQL-Variante der Admin-Daten – dieselbe Logik wie Adminseiten und Admin-JSON. */
 @Controller
 public class AdminGraphQlController {

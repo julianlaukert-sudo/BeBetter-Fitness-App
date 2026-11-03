@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getHealth } from '../api/client.js'
-
+// KI-Log Nr. 9
 export default function BackendStatus() {
   const [state, setState] = useState({ phase: 'loading' })
 
