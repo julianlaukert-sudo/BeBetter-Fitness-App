@@ -1,3 +1,4 @@
+# KI-Log Nr. 19
 # Nur aktiv mit SPRING_PROFILES_ACTIVE=heroku (Heroku-Config-Var), lokal NICHT einschalten
 server:
   # Heroku terminiert HTTPS am Router -> X-Forwarded-*-Header auswerten (korrekte https-Redirects)

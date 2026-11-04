@@ -1,3 +1,4 @@
+# KI-Log Nr. 18
 type Query {
   adminUsers: [AdminUser!]!
   adminStats: AdminStats!
