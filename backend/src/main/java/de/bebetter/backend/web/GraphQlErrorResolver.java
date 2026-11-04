@@ -6,7 +6,7 @@ import graphql.schema.DataFetchingEnvironment;
 import org.springframework.graphql.execution.DataFetcherExceptionResolverAdapter;
 import org.springframework.graphql.execution.ErrorType;
 import org.springframework.stereotype.Component;
-
+// KI-Log Nr. 18
 /** Fachfehler (ApiException) als lesbare GraphQL-Fehler ausgeben. */
 @Component
 public class GraphQlErrorResolver extends DataFetcherExceptionResolverAdapter {

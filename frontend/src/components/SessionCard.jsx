@@ -9,6 +9,7 @@ import sessionC from '../assets/session-c.webp';
 
 const IMAGES = { A: sessionA, B: sessionB, C: sessionC };
 
+// KI-Log Nr. 13, 16
 export default function SessionCard({ session, today }) {
   const state = sessionState(session, today);
   const access = availability(session, today);

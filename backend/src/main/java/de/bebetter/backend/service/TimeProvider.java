@@ -4,7 +4,7 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import org.springframework.stereotype.Component;
-
+// KI-Log Nr. 15
 /**
  * Fachliche Zeit (heute/jetzt in Europe/Berlin) – in Tests ersetzbar.
  * JWT-Prüfung und Ablaufzeit bleiben auf der echten Uhr.

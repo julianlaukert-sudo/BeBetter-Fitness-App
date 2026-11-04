@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import ExerciseModal from './ExerciseModal.jsx';
 import MarkForm from './MarkForm.jsx';
-
+// KI-Log Nr. 13, 16
 function markText(mark) {
   if (!mark) return 'Not marked yet';
   if (mark.automatic) return 'Automatically not done; no measured values.';

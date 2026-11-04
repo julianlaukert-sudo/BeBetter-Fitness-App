@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { registrationErrors, profileErrors, profileBody } from './validation.js';
 import { loadDraft, saveDraft, clearDraft } from './onboardingDraft.js';
-
+// KI-Log Nr. 11
 const account = {
     name: 'Test', email: 'test@example.org', password: 'Secure123!', confirm: 'Secure123!',
 };

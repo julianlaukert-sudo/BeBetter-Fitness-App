@@ -13,7 +13,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
+// KI-Log Nr. 18
 /**
  * Legt EINMALIG einen Admin an – nur wenn ADMIN_BOOTSTRAP_ENABLED=true gesetzt ist.
  * Existiert schon ein ADMIN, passiert nichts (kein Passwort-Reset).

@@ -12,7 +12,7 @@ import {
 } from '../utils/planSummary.js';
 import nextImage from '../assets/dashboard-next.webp';
 import goalImage from '../assets/goal.webp';
-
+// KI-Log Nr. 13
 const GOALS = {
   muscle_gain: { title: 'Muscle gain', text: 'Train consistently, record your progress and build muscle.' },
   fat_loss: { title: 'Fat loss', text: 'Stay consistent, record every session and work towards your goal.' },

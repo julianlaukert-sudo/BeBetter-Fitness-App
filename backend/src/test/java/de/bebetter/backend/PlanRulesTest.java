@@ -15,7 +15,7 @@ import java.util.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+// KI-Log Nr. 12
 class PlanRulesTest {
 
     static Profile profile(int age, int height, String weight) {

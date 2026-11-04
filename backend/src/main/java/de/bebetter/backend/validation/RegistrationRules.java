@@ -6,7 +6,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
+//KI-Log Nr. 11
 // Muss zu frontend/src/utils/validation.js passen.
 public final class RegistrationRules {
 

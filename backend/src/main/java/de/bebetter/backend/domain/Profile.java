@@ -12,7 +12,7 @@ import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
+//KI-Log Nr. 11, 17
 @Entity
 @Table(name = "profil")
 public class Profile {

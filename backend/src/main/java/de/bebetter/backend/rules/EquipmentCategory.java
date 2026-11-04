@@ -1,7 +1,7 @@
 package de.bebetter.backend.rules;
 
 import java.util.Locale;
-
+// KI-Log Nr. 12
 /** Geräteklasse einer ExerciseDB-Übung. */
 public enum EquipmentCategory {
     BARBELL, DUMBBELL, MACHINE, BODYWEIGHT, OTHER;

@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
+//KI-Log Nr. 11, 12
 public interface ProfileRepository extends JpaRepository<Profile, Long> {
 
     // Zeilensperre: zwei gleichzeitige POST /plans erzeugen nur einen Plan (ab Commit 3 genutzt)

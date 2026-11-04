@@ -4,7 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-
+//KI-Log Nr. 10, 11
 /**
  * Passwortregeln für die Registrierung.
  * Die Grenze von 72 Bytes kommt von BCrypt.

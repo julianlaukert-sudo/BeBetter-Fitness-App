@@ -1,5 +1,6 @@
 // Prüft die Formularwerte und baut den Body für POST /marks.
 // Wirft einen Error , wenn etwas nicht passt.
+// KI-Log Nr. 16
 export function markPayload(sessionId, exercise, values) {
   if (!['true', 'false'].includes(values.done))
     throw new Error('Please select done or not done.');

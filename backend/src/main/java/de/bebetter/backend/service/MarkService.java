@@ -9,7 +9,7 @@ import de.bebetter.backend.web.ApiException;
 import java.math.BigDecimal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+// KI-Log Nr. 15
 @Service
 public class MarkService {
 

@@ -8,7 +8,7 @@ import java.time.ZoneId;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+// KI-Log Nr. 15
 class TimeProviderTest {
 
     @Test void mondayBeginsAtBerlinMidnightInSummerTime() {

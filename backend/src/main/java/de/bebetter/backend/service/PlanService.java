@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+// KI-Log Nr. 12, 15
 @Service
 public class PlanService {
 

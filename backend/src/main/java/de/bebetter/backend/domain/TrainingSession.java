@@ -15,7 +15,7 @@ import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
+// KI-Log Nr. 12, 15
 /** Eine Trainingseinheit A, B oder C (PDF: Einheit). */
 @Entity
 @Table(name = "einheit")

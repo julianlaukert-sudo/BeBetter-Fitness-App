@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-
+// KI-Log Nr. 15
 /** Ergebnis einer Planübung: geschafft/nicht geschafft mit Istwerten (PDF: Markierung). */
 @Entity
 @Table(name = "markierung")

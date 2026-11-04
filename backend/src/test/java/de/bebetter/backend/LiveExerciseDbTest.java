@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+// KI-Log Nr. 12
 /** Echter ExerciseDB-Dienst – nur mit -Dbebetter.live=true; Quelle optional über BEBETTER_LIVE_URL. */
 @EnabledIfSystemProperty(named = "bebetter.live", matches = "true")
 class LiveExerciseDbTest {

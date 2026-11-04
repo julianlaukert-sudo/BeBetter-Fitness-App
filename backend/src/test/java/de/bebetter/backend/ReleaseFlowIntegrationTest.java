@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+// KI-Log Nr. 19
 /** Zusammenhängende Abschlussfälle über alle Funktionen. */
 class ReleaseFlowIntegrationTest extends Sprint5Support {
 

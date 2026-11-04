@@ -5,8 +5,8 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Component;
-
-// Gesperrte Token-IDs nach Logout, bis zu ihrem Ablauf (wie Referenz).
+//KI-Log Nr. 11
+// Gesperrte Token-IDs nach Logout, bis zu ihrem Ablauf
 // Bekannte Grenze: liegt im Speicher dieses Prozesses, nach einem Neustart ist die Liste leer.
 @Component
 public class TokenBlocklist {

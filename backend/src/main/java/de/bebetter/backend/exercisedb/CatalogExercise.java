@@ -1,7 +1,7 @@
 package de.bebetter.backend.exercisedb;
 
 import java.util.List;
-
+// KI-Log Nr. 12
 /** Übungsdatensatz aus ExerciseDB v1 – nur im Speicher, keine Tabelle (PDF: Uebung). */
 public record CatalogExercise(String exerciseId, String name, List<String> bodyParts,
                               List<String> targetMuscles, List<String> equipments,

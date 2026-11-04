@@ -1,4 +1,5 @@
 // Baut die SSO-Adresse nur aus einer reinen Backend-Origin
+// KI-Log Nr. 18
 export function adminAction(base) {
   const url = new URL(base);
   if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password

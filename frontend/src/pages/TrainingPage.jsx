@@ -5,6 +5,7 @@ import ApiDownBanner from '../components/ApiDownBanner.jsx';
 import SessionCard from '../components/SessionCard.jsx';
 import { shortDate } from '../utils/planSummary.js';
 
+// KI-Log Nr. 13, 16
 export default function TrainingPage() {
   const { plan, busy, error, refresh } = usePlan();
   // Fehler werden über "error" angezeigt; hier nur abfangen
