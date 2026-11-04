@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-    addDays, availability, exerciseTarget, nextSession, sessionProgress, sessionState,
+    addDays, availability, exerciseTarget, markSummary, nextSession, sessionProgress, sessionState,
     shortDate, statusLabel, timing, weekDays, weekStats, weekdayName,
 } from './planSummary.js';
 
@@ -233,4 +233,28 @@ test('statusLabel: bekannte Status und neutraler Fallback', () => {
     for (const status of ['ARCHIVED', 'open', '', undefined, null, 'constructor']) {
         assert.equal(statusLabel(status), 'Status unknown', String(status));
     }
+});
+
+// KI-Log Nr. 27
+test('markSummary: ohne Markierung', () => {
+    assert.deepEqual(markSummary(null), { key: 'none', text: 'Not marked yet' });
+    assert.deepEqual(markSummary(undefined), { key: 'none', text: 'Not marked yet' });
+});
+
+test('markSummary: automatische Markierung hat Vorrang und zeigt keine Messwerte', () => {
+    const auto = { id: 2, date: '2026-11-08', done: false, weight: null, reps: 0, automatic: true };
+    assert.deepEqual(markSummary(auto), { key: 'automatic', text: 'Automatically not done; no measured values.' });
+    assert.equal(markSummary({ ...auto, done: true, weight: 10, reps: 8 }).key, 'automatic');
+});
+
+test('markSummary: Done und Not done mit Wiederholungen und Gewicht', () => {
+    assert.deepEqual(markSummary(mark(true)), { key: 'done', text: 'Done: 8 reps, 10 kg' });
+    assert.deepEqual(markSummary({ ...mark(false), reps: 5, weight: 10.5 }), { key: 'failed', text: 'Not done: 5 reps, 10.5 kg' });
+});
+
+test('markSummary: Körpergewicht ohne Gewicht, 0 bleibt ein expliziter Wert', () => {
+    assert.equal(markSummary({ ...mark(true), reps: 12, weight: null }).text, 'Done: 12 reps');
+    assert.equal(markSummary({ ...mark(true), reps: 12, weight: undefined }).text, 'Done: 12 reps');
+    assert.equal(markSummary({ ...mark(true), reps: 10, weight: 0 }).text, 'Done: 10 reps, 0 kg');
+    assert.equal(markSummary({ ...mark(false), reps: 0, weight: 7 }).text, 'Not done: 0 reps, 7 kg');
 });
