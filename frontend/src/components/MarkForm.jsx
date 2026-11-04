@@ -3,7 +3,8 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { usePlan } from '../context/PlanContext.jsx';
 import { saveMark } from '../api/marks.js';
 import { markPayload } from '../utils/markValidation.js';
-// KI-Log Nr. 16
+
+// KI-Log Nr. 27 (nur Markup und Klassen, Logik unverändert)
 export default function MarkForm({ sessionId, exercise, available }) {
   const { authorized } = useAuth();
   const { refresh } = usePlan();
@@ -41,30 +42,34 @@ export default function MarkForm({ sessionId, exercise, available }) {
   }
 
   return (
-    <form onSubmit={submit} noValidate>
+    <form className="mark-form" onSubmit={submit} noValidate>
       <fieldset disabled={pending || !available}>
-        <legend>Your training values</legend>
-        <label>
-          Result
-          <select name="done" value={values.done} onChange={field}>
-            <option value="">Please select</option>
-            <option value="true">Done</option>
-            <option value="false">Not done</option>
-          </select>
-        </label>
-        {!exercise.bodyweight && (
-          <label>
-            Actual weight in kg
-            <input name="weight" inputMode="decimal" value={values.weight} onChange={field} />
+        <legend className="visually-hidden">Your training values</legend>
+        <div className="mark-fields">
+          <label className="mark-field mark-field--result">
+            Result
+            <select name="done" value={values.done} onChange={field}>
+              <option value="">Please select</option>
+              <option value="true">Done</option>
+              <option value="false">Not done</option>
+            </select>
           </label>
-        )}
-        <label>
-          Actual reps
-          <input name="reps" inputMode="numeric" value={values.reps} onChange={field} />
-        </label>
-        <button type="submit">{pending ? 'Saving...' : mark ? 'Correct' : 'Save'}</button>
+          {!exercise.bodyweight && (
+            <label className="mark-field mark-field--weight">
+              Actual weight in kg
+              <input name="weight" inputMode="decimal" value={values.weight} onChange={field} />
+            </label>
+          )}
+          <label className="mark-field mark-field--reps">
+            Actual reps
+            <input name="reps" inputMode="numeric" value={values.reps} onChange={field} />
+          </label>
+          <button type="submit" className={`mark-submit${mark ? ' is-correction' : ''}`}>
+            {pending ? 'Saving...' : mark ? 'Correct' : 'Save'}
+          </button>
+        </div>
       </fieldset>
-      {message && <p role="status">{message}</p>}
+      {message && <p role="status" className="mark-message">{message}</p>}
     </form>
   );
 }
