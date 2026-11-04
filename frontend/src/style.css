@@ -187,14 +187,6 @@ button:disabled, fieldset[disabled] button { opacity: 0.5; cursor: not-allowed; 
 }
 .day-options label:has(input:checked) { border-color: var(--color-accent-muted); background: var(--color-accent-tint); }
 
-/* Trainingskarten */
-.card article {
-  margin: var(--space-3) 0;
-  padding: var(--space-4);
-  background: var(--color-surface-raised);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-}
 
 dialog {
   width: min(92vw, 520px);
@@ -916,4 +908,102 @@ a.day--today:hover { border-color: var(--color-accent-hover); }
 @media (min-width: 1400px) {
   .next-card, .goal-card { grid-column: span 7; }
   .week-card, .list-card { grid-column: span 5; }
+}
+
+/* =============Trainingsübersicht=========== */
+
+.training { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
+.training :where(h1, h2, p, ul, ol) { margin: 0; }
+.training :where(ul, ol) { padding: 0; list-style: none; }
+.training :where(a) { color: inherit; text-decoration: none; }
+
+.training-header { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: var(--space-3) var(--space-4); padding-bottom: var(--space-2); }
+.training-title { margin-bottom: 4px; font-size: clamp(1.9rem, 4vw, 2.4rem); }
+.training-sub { color: var(--color-muted); }
+.refresh-button { display: inline-flex; align-items: center; gap: var(--space-2); }
+.training-status { color: var(--color-muted); }
+.training-banner:empty { display: none; }
+.training-banner .form-errors { margin: 0; }
+
+.notice { display: flex; align-items: flex-start; gap: 14px; padding: 14px 18px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); }
+.notice-icon { display: grid; flex: none; place-items: center; width: 40px; height: 40px; color: var(--color-accent); background: var(--color-accent-tint); border-radius: var(--radius-md); }
+.notice h2 { font-size: 1rem; }
+.notice p { font-size: 0.9rem; color: var(--color-muted); }
+
+/*  Einheiten  */
+.session-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
+.session-card { container: session / inline-size; display: flex; flex-direction: column; overflow: hidden; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); }
+.session-card--today { border-color: var(--color-accent); }
+
+/*  Motiv rechts, dunkler Verlauf für die Lesbarkeit */
+.session-card-head { position: relative; isolation: isolate; display: flex; flex-direction: column; gap: 6px; min-height: 140px; padding: 16px 20px; border-bottom: 1px solid var(--color-border); }
+.session-card-image { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 78% center; }
+.session-card-head::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(16, 25, 34, 0.65) 0%, rgba(16, 25, 34, 0) 55%),
+    radial-gradient(ellipse 240px 110px at 100% 0%, rgba(16, 25, 34, 0.92) 0%, rgba(16, 25, 34, 0.7) 50%, rgba(16, 25, 34, 0) 100%),
+    linear-gradient(90deg, rgba(16, 25, 34, 0.95) 0%, rgba(16, 25, 34, 0.78) 48%, rgba(16, 25, 34, 0.3) 100%);
+}
+.session-card-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 12px; }
+.session-date { display: inline-flex; align-items: center; gap: 6px; font-size: 0.9rem; color: var(--color-muted); }
+.session-card h2 { margin-top: auto; font-size: 1.6rem; }
+.session-carried { display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--color-text); }
+.session-card .status-text { text-shadow: 0 1px 8px rgba(8, 13, 18, 0.8); }
+
+/* Status: schlichter Punkt mit Text */
+.status-text--today { color: var(--color-accent); }
+.status-text--today::before { background: var(--color-accent); }
+.status-text--started::before { background: var(--color-accent-muted); }
+.status-text--open::before, .status-text--planned::before, .status-text--unknown::before { background: transparent; border: 2px solid var(--color-border-strong); }
+.status-text--unknown::before { border-style: dashed; }
+.day--unknown .day-mark { border-style: dashed; }
+
+/* Übungen, Fortschritt, Aktion */
+.session-card-body { display: flex; flex: 1; flex-direction: column; gap: var(--space-4); padding: 8px 20px 20px; }
+.session-exercises { flex: 1; }
+.session-exercises li { display: flex; flex-direction: column; gap: 2px; padding: 10px 0; border-bottom: 1px solid var(--color-border); }
+.session-exercises li:last-child { border-bottom: 0; }
+.ex-name { font-size: 0.92rem; font-weight: 500; text-transform: capitalize; overflow-wrap: anywhere; }
+.ex-spec { font-size: 0.85rem; color: var(--color-muted); }
+.session-progress { display: grid; gap: 8px; font-size: 0.85rem; color: var(--color-muted); }
+.session-foot { display: flex; flex-direction: column; align-items: flex-start; gap: 0 12px; padding-top: var(--space-3); border-top: 1px solid var(--color-border); }
+.session-availability { display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--color-muted); }
+.session-availability svg { color: var(--color-accent-muted); }
+.session-availability.is-locked svg { color: var(--color-faint); }
+.session-link { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: 0.95rem; font-weight: 600; color: var(--color-muted); }
+.session-link:hover { color: var(--color-text); }
+.session-link.is-primary { color: var(--color-accent); }
+.session-link.is-primary:hover { color: var(--color-accent-hover); }
+
+/* Breite Karten (Einzelspalte oder sehr große Bildschirme): Zeilen und Fußzeile nebeneinander */
+@container session (min-width: 400px) {
+  .session-exercises li { flex-direction: row; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .ex-spec { flex: none; text-align: right; }
+  .session-foot { flex-direction: row; align-items: center; justify-content: space-between; }
+}
+
+/*So funktioniert der Plan  */
+.plan-info { padding: 0; }
+.plan-info summary { display: flex; align-items: center; gap: 10px; padding: 16px 20px; font-weight: 600; list-style: none; cursor: pointer; }
+.plan-info summary::-webkit-details-marker { display: none; }
+.plan-info summary svg { color: var(--color-accent); }
+.plan-info summary::after { content: ''; width: 8px; height: 8px; margin-left: auto; border-right: 2px solid var(--color-muted); border-bottom: 2px solid var(--color-muted); transform: rotate(45deg); transition: transform 0.15s; }
+.plan-info[open] summary::after { transform: rotate(-135deg); }
+.plan-info-body { display: grid; gap: var(--space-3); padding: 0 20px 20px; font-size: 0.92rem; color: var(--color-muted); }
+.plan-info-body ul { display: grid; gap: var(--space-2); padding-left: 20px; list-style: disc; }
+
+@media (max-width: 599px) {
+  .session-card-head { min-height: 124px; padding: 14px 16px; }
+  .session-card-body { padding: 4px 16px 16px; }
+  .plan-info summary { padding: 14px 16px; }
+  .plan-info-body { padding: 0 16px 16px; }
+}
+
+/* Drei Karten nebeneinander, sobald neben der Sidebar genug Platz ist */
+@media (min-width: 1280px) {
+  .session-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
