@@ -19,7 +19,7 @@ import org.springframework.web.client.RestClient;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-
+// KI-Log Nr. 29
 class CatalogRefreshTest {
 
     private final RestClient.Builder builder = RestClient.builder();

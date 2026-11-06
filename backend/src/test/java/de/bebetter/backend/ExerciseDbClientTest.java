@@ -119,6 +119,7 @@ class ExerciseDbClientTest {
             server.verify();
         } finally { api.close(); }
     }
+    // KI-Log Nr. 29: Prüft die gemeinsame Sperrfrist bei HTTP 429.
     @Test void clientHonorsRetryAfterOnBothAddresses() {
         var builder = RestClient.builder();
         var server = MockRestServiceServer.bindTo(builder).build();
