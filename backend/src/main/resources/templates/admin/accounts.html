@@ -5,6 +5,12 @@
 <main>
     <header th:replace="~{admin/fragments :: nav}"></header>
     <h2>User list</h2>
+    <!-- KI-Log Nr. 30: Suchfeld und Einbindung des JavaScript-Filters -->
+    <label hidden>
+        Filter by name or email
+        <input id="account-filter" type="search">
+    </label>
+    <script defer th:src="@{/admin/accounts/filter.js}"></script>
     <div class="table-wrap">
         <table>
             <caption>Registered accounts, newest first</caption>
