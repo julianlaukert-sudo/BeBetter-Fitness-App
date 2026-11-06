@@ -61,6 +61,19 @@ public class ExerciseDbClient {
     public List<CatalogExercise> byBodyPart(String part) {
         var cached = lists.get(part);
         if (fresh(cached)) return cached.value();
+        return loadBodyPart(part, cached);
+    }
+    void refreshBodyPartIfDue(String part) {
+        var current = lists.get(part);
+        if (current != null && current.until().isAfter(clock.instant().plus(Duration.ofMinutes(45)))) {
+            return;
+        }
+        loadBodyPart(part, current);
+    }
+    private synchronized List<CatalogExercise> loadBodyPart(
+            String part, Entry<List<CatalogExercise>> observed) {
+        var latest = lists.get(part);
+        if (latest != observed && fresh(latest)) return latest.value();
         var result = new LinkedHashMap<String, CatalogExercise>();
         var cursors = new HashSet<String>();
         String cursor = null;
