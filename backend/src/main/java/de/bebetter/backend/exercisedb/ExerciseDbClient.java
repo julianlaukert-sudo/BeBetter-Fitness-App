@@ -63,6 +63,7 @@ public class ExerciseDbClient {
         if (fresh(cached)) return cached.value();
         return loadBodyPart(part, cached);
     }
+    // KI-Log Nr. 29: Fehlende oder bald ablaufende Kataloglisten nachladen.
     void refreshBodyPartIfDue(String part) {
         var current = lists.get(part);
         if (current != null && current.until().isAfter(clock.instant().plus(Duration.ofMinutes(45)))) {
@@ -137,6 +138,7 @@ public class ExerciseDbClient {
                 return body;
             } catch (HttpClientErrorException.TooManyRequests ex) {
                 // Rate Limit wird NICHT über die Ersatzadresse umgangen
+                // KI-Log Nr. 29: Retry-After für die gemeinsame Sperrfrist auswerten.
                 var headers = ex.getResponseHeaders();
                 blockedUntil = RetryAfterPolicy.until(
                         headers == null ? null : headers.getFirst("Retry-After"),
