@@ -7,3 +7,7 @@ JWT_SECRET: test-only-secret-at-least-thirty-two-bytes-long
 
 training:
   week-change-cron: "-"
+
+exercisedb:
+  refresh:
+    enabled: false

@@ -12,3 +12,4 @@ Grundlage: BeBetter_01_Entwicklungsplan, BeBetter_03_Sprint_1_Arbeitsblatt, BeBe
 | 15.10.2026 | Registrierungs- und Loginseite vor Sprint 2 begonnen | paralleles Arbeiten bei Ausfall einer Person | Team |
 | 15.10.2026 | Heroku-Apps gehören Person 1 (Studenten-Credits) | Credits bei Person 3 nicht verfügbar | Team |
 | 15.10.2026 | Ergänzung GraphQL (Sprint 4) | Bewertungskriterium, fehlte im Plan | offen |
+| 06.11.2026 | ExerciseDB-Katalog beim Start und vor Cache-Ablauf im Hintergrund laden | Planerstellung bei warmem Cache auch während eines API-Ausfalls ermöglichen | Team |

@@ -18,7 +18,6 @@ public class ExerciseDbClient {
     private static final int PAGE_SIZE = 25;
     private static final int MAX_PAGES = 4;
     private static final long MIN_GAP_NANOS = 500_000_000L;   // 500 ms zwischen Aufrufen
-    private static final long RATE_LIMIT_PAUSE_SECONDS = 60;  // Sperrfrist nach HTTP 429
 
     private record Entry<T>(T value, Instant until) {}
 
@@ -62,6 +61,19 @@ public class ExerciseDbClient {
     public List<CatalogExercise> byBodyPart(String part) {
         var cached = lists.get(part);
         if (fresh(cached)) return cached.value();
+        return loadBodyPart(part, cached);
+    }
+    void refreshBodyPartIfDue(String part) {
+        var current = lists.get(part);
+        if (current != null && current.until().isAfter(clock.instant().plus(Duration.ofMinutes(45)))) {
+            return;
+        }
+        loadBodyPart(part, current);
+    }
+    private synchronized List<CatalogExercise> loadBodyPart(
+            String part, Entry<List<CatalogExercise>> observed) {
+        var latest = lists.get(part);
+        if (latest != observed && fresh(latest)) return latest.value();
         var result = new LinkedHashMap<String, CatalogExercise>();
         var cursors = new HashSet<String>();
         String cursor = null;
@@ -125,7 +137,10 @@ public class ExerciseDbClient {
                 return body;
             } catch (HttpClientErrorException.TooManyRequests ex) {
                 // Rate Limit wird NICHT über die Ersatzadresse umgangen
-                blockedUntil = clock.instant().plusSeconds(RATE_LIMIT_PAUSE_SECONDS);
+                var headers = ex.getResponseHeaders();
+                blockedUntil = RetryAfterPolicy.until(
+                        headers == null ? null : headers.getFirst("Retry-After"),
+                        clock.instant());
                 throw new ExerciseDbException("ExerciseDB rate limit. Please try later.", ex);
             } catch (InterruptedException ex) {
                 Thread.currentThread().interrupt();
