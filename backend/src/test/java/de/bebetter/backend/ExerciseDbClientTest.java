@@ -119,4 +119,27 @@ class ExerciseDbClientTest {
             server.verify();
         } finally { api.close(); }
     }
+    @Test void clientHonorsRetryAfterOnBothAddresses() {
+        var builder = RestClient.builder();
+        var server = MockRestServiceServer.bindTo(builder).build();
+        var clock = new TestClock();
+        var api = new ExerciseDbClient("https://one.test,https://two.test", builder, clock);
+
+        server.expect(requestTo("https://one.test/exercises/x1"))
+                .andRespond(withStatus(HttpStatus.TOO_MANY_REQUESTS)
+                        .header("Retry-After", "120"));
+        server.expect(requestTo("https://one.test/exercises/x1"))
+                .andRespond(withSuccess("{\"data\":" + ITEM + "}", MediaType.APPLICATION_JSON));
+
+        try {
+            assertThrows(ExerciseDbException.class, () -> api.exercise("x1"));
+            clock.now = clock.now.plusSeconds(119);
+            assertThrows(ExerciseDbException.class, () -> api.exercise("x1"));
+            clock.now = clock.now.plusSeconds(1);
+            assertEquals("x1", api.exercise("x1").exerciseId());
+            server.verify();
+        } finally {
+            api.close();
+        }
+    }
 }
