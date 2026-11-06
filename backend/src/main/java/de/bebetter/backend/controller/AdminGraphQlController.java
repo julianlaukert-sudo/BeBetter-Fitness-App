@@ -1,5 +1,6 @@
 package de.bebetter.backend.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import de.bebetter.backend.dto.AdminUserDto;
 import de.bebetter.backend.dto.StatsResponse;
 import de.bebetter.backend.dto.UserDeletedResponse;
@@ -9,9 +10,10 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
-// KI-Log Nr. 18
+// KI-Log Nr. 18,28
 /** GraphQL-Variante der Admin-Daten – dieselbe Logik wie Adminseiten und Admin-JSON. */
 @Controller
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminGraphQlController {
 
     private final AdminService admin;

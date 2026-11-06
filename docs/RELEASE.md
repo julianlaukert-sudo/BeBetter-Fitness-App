@@ -33,12 +33,17 @@ VITE_API_URL wird beim Build eingebaut -> nach Änderung neu deployen. Keine Sec
 1. Backup erstellen und ID/Zeitpunkt notieren.
 2. Backend: Deploy -> Manual deploy -> main -> Deploy Branch. SHA in Activity vergleichen.
 3. Logs: Flyway V5–V7 erfolgreich, keine Validierungsfehler; /health prüfen.
-4. Admin einmalig anlegen (Bootstrap-Variablen), Logs prüfen, dann ADMIN_BOOTSTRAP_ENABLED
-   und ADMIN_PASSWORD wieder löschen.
-5. Frontend: aus demselben main deployen; SHA vergleichen.
-6. Online-Abnahme A25/A26 mit eigenen Testkonten.
-7. Backend neu starten (More -> Restart all dynos), neu anmelden, Daten vergleichen (A21).
-8. Release-IDs, SHA, Migrationsstand und Ergebnisse ins RELEASE-PROTOKOLL.
+4. **Backend-GraphQL-Live-Smoke-Test:** Nach dem Backend-Deployment die tatsächliche Backend-Adresse über Heroku „Open app“ bzw. Settings -> Domains ermitteln (nicht raten).
+    - Mit einem gültigen USER-Token `myProfile` und `currentPlan` über `POST /graphql` aufrufen.
+    - Prüfen, dass beide Queries erfolgreich antworten und nur die Daten des angemeldeten Nutzers zurückgeben.
+    - Mit einem gültigen ADMIN-Token zusätzlich eine Admin-Query, beispielsweise `adminStats`, aufrufen.
+    - Prüfen, dass die Admin-Query erfolgreich antwortet.
+    - Backend-Adresse, Zeitpunkt und Ergebnis des Live-Tests im RELEASE-PROTOKOLL festhalten.
+5. Admin einmalig anlegen (Bootstrap-Variablen), Logs prüfen, dann ADMIN_BOOTSTRAP_ENABLED und ADMIN_PASSWORD wieder löschen.
+6. Frontend: aus demselben main deployen; SHA vergleichen. **Für die GraphQL-Erweiterung allein ist kein Frontend-Deployment erforderlich, da das Frontend nicht geändert wurde.**
+7. Online-Abnahme A25/A26 mit eigenen Testkonten.
+8. Backend neu starten (More -> Restart all dynos), neu anmelden, Daten vergleichen (A21).
+9. Release-IDs, SHA, Migrationsstand und Ergebnisse ins RELEASE-PROTOKOLL.
 
 HTTP 429 der ExerciseDB oder ein nicht erstellbarer Erstplan verhindert die Fertigmeldung.
 Heroku bricht Anfragen nach 30 s ab (H12): Logs prüfen, nicht nur Timeouts erhöhen.

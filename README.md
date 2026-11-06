@@ -12,7 +12,7 @@ und serverseitig gerenderte Thymeleaf-Adminseiten (MPA).
 | MPA | Adminbereich mit Thymeleaf: `/admin/overview`, `/admin/accounts`, Löschbestätigung, Logout (Session + CSRF) |
 | SPA | React 19 + React Router: Registrierung, Login, Onboarding, Training, Markierungen, Profil |
 | Backend | Spring Boot 3.5, JPA, Flyway V1–V7, Spring Security mit JWT, Planlogik, Wochenwechsel-Job |
-| GraphQL | `POST /graphql` (nur ADMIN): `adminUsers`, `adminStats`, Mutation `deleteUser` |
+| GraphQL | POST /graphql: Admin-Queries/Mutation nur ADMIN; myProfile/currentPlan nur USER |
 | Integration | Externe ExerciseDB (Cache, Rate-Limit-Schutz), Frontend↔Backend, Integrationstests mit PostgreSQL |
 | Infrastruktur | Docker-PostgreSQL, GitHub-CI (Backend, Frontend, statische Probe), Live-API-Workflow, zwei Heroku-Apps, Heroku-Profil mit HTTPS-Cookies, Release mit Backup |
 

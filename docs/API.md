@@ -215,11 +215,179 @@ Nur Geschlecht oder gleiche Werte -> keine Neuplanung. Ohne bisherigen Plan -> k
 - Nicht angemeldet -> Redirect FRONTEND_URL/login; falscher Origin/Rolle/CSRF -> 403
   Jedes JWT wird zusätzlich gegen die Datenbank geprüft (Konto vorhanden, Rolle passt).
 
-## GraphQL (Admin)
+## GraphQL
 
-POST /graphql mit `Authorization: Bearer <ADMIN-Token>` und JSON-Body `{"query": "..."}`.
-Schema: backend/src/main/resources/graphql/schema.graphqls
+Die GraphQL-API ist unter `POST /graphql` erreichbar. Alle Anfragen müssen mit einem gültigen Bearer-Token authentifiziert werden.
+
+**Request-Format:**
+
+```http
+POST /graphql
+Authorization: Bearer <TOKEN>
+Content-Type: application/json
+```
+
+```json
+{
+  "query": "..."
+}
+```
+
+Das GraphQL-Schema ist definiert in:
+
+`backend/src/main/resources/graphql/schema.graphqls`
+
+### Berechtigungen
+
+Die verfügbaren Queries und Mutations hängen von der Rolle des angemeldeten Nutzers ab.
+
+| Rolle | Operationen | Beschreibung |
+|---|---|---|
+| USER | `myProfile` | Ruft das Profil des angemeldeten Nutzers ab. |
+| USER | `currentPlan` | Ruft den aktuellen Trainingsplan des angemeldeten Nutzers ab. |
+| ADMIN | `adminUsers` | Ruft die Nutzerübersicht ab. |
+| ADMIN | `adminStats` | Ruft die administrativen Statistiken ab. |
+| ADMIN | `deleteUser` | Löscht einen Nutzer. |
+
+### USER-Queries
+
+**Eigenes Profil abrufen:**
 
 ```graphql
-{ adminStats { users plans marksLastSevenDays } adminUsers { userId name email registeredAt role } }
-mutation { deleteUser(id: "42") { message userId } }
+query {
+  myProfile {
+    personal {
+      age
+      gender
+      height
+      weight
+    }
+    training {
+      goal
+      fitnessLevel
+      trainingDays
+    }
+  }
+}
+```
+
+**Aktuellen Trainingsplan abrufen:**
+
+```graphql
+query {
+  currentPlan {
+    planId
+    weekStart
+    weekEnd
+    today
+    exerciseDataAvailable
+    sessions {
+      sessionId
+      label
+      date
+      status
+      available
+      carried
+      exercises {
+        planExerciseId
+        exerciseId
+        name
+        bodyPart
+        targetMuscle
+        equipment
+        imageUrl
+        sets
+        reps
+        weight
+        bodyweight
+        mark {
+          id
+          date
+          done
+          weight
+          reps
+          automatic
+        }
+      }
+    }
+  }
+}
+```
+
+Bei `myProfile` und `currentPlan` wird keine Nutzer-ID als Argument übergeben. Die Identität des Nutzers wird ausschließlich aus dem JWT des Bearer-Tokens ermittelt. Dadurch kann ein Nutzer über diese persönlichen Queries nur auf seine eigenen Daten zugreifen.
+
+Die Profil- und Trainingsplan-Queries sind im API-Vertrag lesend. Beim Abruf von `currentPlan` wird intern derselbe Wochenwechsel-Nachholschritt ausgeführt wie bei REST `GET /plans/current`. Dadurch wird sichergestellt, dass der zurückgegebene Trainingsplan dem aktuellen Wochenstand entspricht.
+
+Änderungen am Profil sowie das Setzen und Ändern von Übungsmarkierungen erfolgen weiterhin über die bestehenden REST-Endpunkte. Dafür werden keine GraphQL-Mutations bereitgestellt.
+
+### ADMIN-Queries und -Mutations
+
+**Nutzerübersicht und Statistiken abrufen:**
+
+```graphql
+query {
+  adminStats {
+    users
+    plans
+    marksLastSevenDays
+  }
+  adminUsers {
+    userId
+    name
+    email
+    registeredAt
+    role
+  }
+}
+```
+
+**Nutzer löschen:**
+
+```graphql
+mutation {
+  deleteUser(id: "42") {
+    message
+    userId
+  }
+}
+```
+
+Diese Operationen sind ausschließlich für angemeldete Nutzer mit der Rolle `ADMIN` vorgesehen.
+
+### Fehlerbehandlung und Authentifizierung
+
+**Fehlendes oder ungültiges Token**
+
+Fehlt das Bearer-Token oder ist es ungültig, wird die Anfrage bereits durch die Authentifizierung abgewiesen.
+
+Die API antwortet in diesem Fall mit HTTP `400 Bad Request` und der vorhandenen JSON-Fehlerstruktur:
+
+```json
+{
+  "message": "Token is wrong."
+}
+```
+
+**Unzureichende Berechtigung**
+
+Wird eine GraphQL-Operation mit einer gültigen Anmeldung, aber einer unzureichenden Rolle aufgerufen, wird der Zugriff innerhalb des Resolver-Aufrufs durch die Rollenprüfung verweigert.
+
+Beispiel: Ein angemeldeter Nutzer mit der Rolle `USER` versucht, die Admin-Query `adminStats` aufzurufen.
+
+Die GraphQL-Antwort enthält ein nicht leeres `errors`-Array. Die angeforderten Admin-Daten werden nicht zurückgegeben. Das Feld `data` fehlt, ist `null` oder enthält für `adminStats` den Wert `null`.
+
+Der Integrationstest `userTokenIsRejected` prüft dieses Verhalten. Ein bestimmter HTTP-Status oder ein konkreter GraphQL-Fehlercode wird durch diesen Test nicht festgelegt.
+
+**Fachliche Fehler**
+
+Fachliche Fehler, die als `ApiException` auftreten, werden durch den `GraphQlErrorResolver` in GraphQL-Fehler mit der Kategorie `BAD_REQUEST` übersetzt.
+
+Beispiel: Wird `currentPlan` ohne vorhandenen Trainingsplan aufgerufen, kann der Fehler `No plan found.` auftreten.
+
+Da das Root-Feld der Query nicht-null sein kann, kann GraphQL in diesem Fall zusätzlich `data: null` zurückgeben. Der Fehler selbst steht im `errors`-Array.
+
+### Introspection und GraphiQL
+
+GraphQL-Introspection ist für authentifizierte Nutzer möglich. Die verfügbaren Operationen und deren Berechtigungen werden weiterhin serverseitig geprüft.
+
+Die GraphiQL-Browseroberfläche wird im Deployment nicht aktiviert. Der Zugriff auf die API erfolgt über `POST /graphql`, beispielsweise mit einem HTTP-Client oder über die Anwendung.

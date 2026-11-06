@@ -1,6 +1,9 @@
 type Query {
   adminUsers: [AdminUser!]!
   adminStats: AdminStats!
+
+  myProfile: Profile!
+  currentPlan: TrainingPlan!
 }
 
 type Mutation {
@@ -24,4 +27,70 @@ type AdminStats {
 type DeletedUser {
   message: String!
   userId: ID!
+}
+
+type Profile {
+  profileId: ID!
+  personal: Personal!
+  training: Training!
+  createdAt: String!
+  updatedAt: String!
+  planExists: Boolean!
+  nextPlanFrom: String
+}
+
+type Personal {
+  age: Int!
+  gender: String!
+  height: Int!
+  weight: Float!
+}
+
+type Training {
+  goal: String!
+  fitnessLevel: String!
+  trainingDays: [String!]!
+}
+
+type TrainingPlan {
+  planId: ID!
+  weekStart: String!
+  weekEnd: String!
+  today: String!
+  exerciseDataAvailable: Boolean!
+  sessions: [TrainingSession!]!
+}
+
+type TrainingSession {
+  sessionId: ID!
+  label: String!
+  date: String!
+  status: String!
+  available: Boolean!
+  carried: Boolean!
+  exercises: [PlanExercise!]!
+}
+
+type PlanExercise {
+  planExerciseId: ID!
+  exerciseId: String!
+  name: String
+  bodyPart: String!
+  targetMuscle: String
+  equipment: String
+  imageUrl: String
+  sets: Int!
+  reps: String!
+  weight: Float
+  bodyweight: Boolean!
+  mark: ExerciseMark
+}
+
+type ExerciseMark {
+  id: ID!
+  date: String!
+  done: Boolean!
+  weight: Float
+  reps: Int!
+  automatic: Boolean!
 }

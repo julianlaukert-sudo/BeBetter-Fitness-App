@@ -13,3 +13,4 @@ Grundlage: BeBetter_01_Entwicklungsplan, BeBetter_03_Sprint_1_Arbeitsblatt, BeBe
 | 15.10.2026 | Heroku-Apps gehören Person 1 (Studenten-Credits) | Credits bei Person 3 nicht verfügbar | Team |
 | 15.10.2026 | Ergänzung GraphQL (Sprint 4) | Bewertungskriterium, fehlte im Plan | offen |
 | 06.11.2026 | ExerciseDB-Katalog beim Start und vor Cache-Ablauf im Hintergrund laden | Planerstellung bei warmem Cache auch während eines API-Ausfalls ermöglichen | Team |
+| 06.11.2026 | GraphQL um myProfile und currentPlan erweitert | Lesende REST-Parität für Profil und Trainingsplan als Bewertungskriterium; Markieren und Profiländerung bleiben REST | Team |

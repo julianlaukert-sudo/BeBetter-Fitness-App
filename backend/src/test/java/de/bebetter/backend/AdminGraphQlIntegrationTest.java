@@ -27,10 +27,20 @@ class AdminGraphQlIntegrationTest extends Sprint5Support {
         return json.readTree(done.getResponse().getContentAsString());
     }
 
-    @Test void userTokenIsRejected() throws Exception {
-        call(post("/graphql"), token, Map.of("query", "{ adminStats { users } }"))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Access denied."));
+    @Test
+    void userTokenIsRejected() throws Exception {
+        JsonNode result = graphql(token, "{ adminStats { users } }");
+
+        assertTrue(result.has("errors"),
+                "USER darf adminStats nicht aufrufen");
+
+        assertFalse(result.path("errors").isEmpty(),
+                "Es muss mindestens ein Berechtigungsfehler vorhanden sein");
+
+        assertTrue(result.path("data").isMissingNode()
+                        || result.path("data").isNull()
+                        || result.path("data").path("adminStats").isNull(),
+                "USER darf keine Admin-Statistiken erhalten");
     }
 
     @Test void missingTokenIsRejected() throws Exception {

@@ -1,5 +1,6 @@
 package de.bebetter.backend.config;
 
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import de.bebetter.backend.repository.UserRepository;
 import de.bebetter.backend.security.JsonSecurityResponses;
@@ -41,6 +42,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 //KI-Log Nr. 11, 18
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
@@ -218,7 +220,7 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers("/admin/**")
                         .hasRole("ADMIN")
-                        .requestMatchers("/graphql").hasRole("ADMIN")
+                        .requestMatchers("/graphql").authenticated()
                         .requestMatchers(
                                 "/plans",
                                 "/plans/**",
