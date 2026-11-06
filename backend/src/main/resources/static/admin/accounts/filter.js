@@ -1,3 +1,4 @@
+// KI-Log Nr. 30
 const filter = document.querySelector('#account-filter');
 const rows = document.querySelectorAll('.table-wrap tbody tr');
 
