@@ -67,11 +67,17 @@ Zwei Apps (Backend mit PostgreSQL, Frontend), Monorepo-Buildpack + heroku/java b
 Details: docs/RELEASE.md, Ergebnisse: docs/RELEASE-PROTOKOLL.md.
 
 ## Umfang und Grenzen
-Kein Kalender, keine leistungsabhängige Prozentanpassung, kein PB-15/PB-19.
+Kein Kalender, kein PB-15/PB-19. Beim regulären Wochenwechsel steigen die Gewichtsvorgaben einer Einheit 
+bei 4–5 von 5 als „Done“ markierten Übungen um 5 %, gerundet auf 0,5 kg und begrenzt auf 500 kg.
+Übungen ohne Zusatzgewicht bleiben ohne Zusatzgewicht. Bei einer fälligen Neuplanung nach Profiländerung g
+elten die Startgewichtsregeln.
+
 Admin-Session und Logout-Sperrliste liegen im Backendprozess (nach Neustart neu anmelden).
 
 ## Dokumente
-docs/API.md · docs/SETUP.md · docs/NUTZERHANDBUCH.md · docs/sprint-6-abnahme.md ·
-docs/RELEASE.md · docs/RELEASE-PROTOKOLL.md
+[API](docs/API.md) · [Setup](docs/SETUP.md) · [Nutzerhandbuch](docs/NUTZERHANDBUCH.md) · 
+[Sprint-6-Abnahme](docs/SPRINT-6-abnahme.md) · 
+[Deployment und App-Adressen](docs/DEPLOYMENT.md) · [Release](docs/RELEASE.md) · 
+[Release-Protokoll](docs/RELEASE-PROTOKOLL.md)
 
 Secrets, Tokens, Passwörter und Datenbankadressen werden nie committed.

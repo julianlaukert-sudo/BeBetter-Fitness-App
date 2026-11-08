@@ -1,10 +1,10 @@
 # Deployment (Heroku)
 
 ## Apps
-| Purpose  | App                  | URL                                                     |
-|----------|----------------------|---------------------------------------------------------|
+| Purpose  | App                  | URL                                                  |
+|----------|----------------------|------------------------------------------------------|
 | Backend  | bebetter-fitness-app | https://bebetter-fitness-app-0caa005ed4cc.herokuapp.com |
-| Frontend | bebetter-fitness-app | https://bebetter-fitness-app-0caa005ed4cc.herokuapp.com |
+| Frontend | bebetter-frontend | https://bebetter-frontend-8982b2eba40e.herokuapp.com |
 
 Both apps are owned by Person 1 (billing via student credits). Other team members are collaborators.
 
