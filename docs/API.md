@@ -185,7 +185,11 @@ GET /plans/current und POST /plans schließen zuerst veraltete Wochen ab und kop
 - teilweise markierte Einheiten: offene Übungen -> automatisch nicht geschafft
   (automatic=true, reps=0, weight=null, Datum = Sonntag der alten Woche)
 - ganz unmarkierte Einheiten: keine Fehlmarkierungen, Kopie mit carried=true
-- Kopie: gleiche Vorgaben, neue IDs, keine Markierungen, keine Gewichtsanpassung
+- Kopie: gleiche Übungen, Sätze und Wiederholungen, neue IDs, keine Markierungen
+- Progression (KI-Log Nr. 31): hat eine Einheit 4 oder 5 von 5 Übungen mit done=true,
+  steigt das Gewicht jeder Übung dieser Einheit um 5 % (auf 0,5 kg gerundet, max. 500 kg);
+  Körpergewicht bleibt null. Bei 3 oder weniger done=true unverändert.
+  Unmarkiert und done=false (auch automatisch) zählen gleich. Nach fälliger Neuplanung keine Progression.
   Zusätzlich läuft montags 00:05 (Europe/Berlin) ein Job, solange das Backend läuft.
 
 ## Sprint 5 – Profil bearbeiten

@@ -24,11 +24,12 @@ Die Oberfläche ist englisch; die Schaltflächen sind unten in Anführungszeiche
 - Status auf den Karten: Open, Started, Done, Not done, Partially done.
 
 ## Neue Woche
-- Ab Montag entsteht automatisch eine neue Woche mit denselben Vorgaben.
+- Ab Montag entsteht automatisch eine neue Woche mit denselben Übungen.
+- Wer in einer Einheit mindestens 4 von 5 Übungen als „Done" markiert, bekommt dort in der neuen Woche 5 % mehr Gewicht (auf 0,5 kg gerundet). Sonst bleiben die Vorgaben gleich.
 - Nur offene Übungen teilweise markierter Einheiten werden automatisch „nicht geschafft“.
 - Ganz unmarkierte Einheiten erscheinen als „Carried over …“.
 - Nach einer Pause holt „Refresh plan“ fehlende Wochen nach.
-- Kein Kalender, keine automatische Gewichtssteigerung.
+- Kein Kalender.
 
 ## Profil bearbeiten („My profile“)
 - Aktuelle Werte sind vorbelegt; Änderungen mit dem Häkchen bestätigen und „Save changes“.
