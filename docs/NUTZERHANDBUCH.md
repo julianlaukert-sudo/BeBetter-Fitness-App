@@ -14,7 +14,7 @@ Die Oberfläche ist englisch; die Schaltflächen sind unten in Anführungszeiche
 ## Training
 - Drei Einheiten (Session A, B, C) mit je fünf Übungen.
 - „Exercise details“ zeigt Zielmuskel, Gerät und Bild (falls verfügbar).
-- „Training target“ ist ein berechneter Startvorschlag (Modellwert, keine Kraftmessung);
+- „Training target“ ist ein berechneter Startvorschlag aus Fitnesslevel, Körperdaten, Alter und Geschlecht(Modellwert, keine Kraftmessung);
   bei Kurzhanteln gilt das Gewicht pro Hand.
 - Pro Übung „Done“ antippen, wenn sie geschafft ist (Häkchen). Erneutes Antippen nimmt das Häkchen weg.
   Kein Häkchen bedeutet „nicht geschafft“. Gewicht und Wiederholungen werden nicht eingetragen.

@@ -203,8 +203,9 @@ GET /plans/current und POST /plans schließen zuerst veraltete Wochen ab und kop
 
 Gleicher Body und gleiche Regeln wie POST /profile. Holt vorher verpasste Wochen mit dem alten Profil nach.
 Speichert sofort; die aktuelle Woche bleibt unverändert.
-Relevante Änderungen (Alter, Größe, Gewicht, Ziel, Level, Trainingstage) -> neuer Plan ab nächstem Montag.
-Nur Geschlecht oder gleiche Werte -> keine Neuplanung. Ohne bisherigen Plan -> keine Vormerkung.
+Relevante Änderungen (Alter, Geschlecht, Größe, Gewicht, Ziel, Level, Trainingstage) -> neuer Plan ab nächstem Montag.
+Gleiche Werte -> keine Neuplanung. Ohne bisherigen Plan -> keine Vormerkung.
+Startgewicht (KI-Log Nr. 33): zusätzlich × Geschlechtsfaktor (male 1,2 · diverse 1,1 · female 1,0).
 - 200: ProfileResponse inkl. `nextPlanFrom` (Datum oder null)
 - 400: `Invalid input.` + errors, `Profile not found.`, `Access denied.`, `Token is wrong.`
   GET/POST /profile liefern ebenfalls `nextPlanFrom`.
