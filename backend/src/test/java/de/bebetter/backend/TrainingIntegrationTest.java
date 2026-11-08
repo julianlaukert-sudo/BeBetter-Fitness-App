@@ -36,7 +36,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-// KI-Log Nr. 15
+// KI-Log Nr. 15,31
 /** Ohne äußere Testtransaktion: Aufrufe committen wie im Betrieb; Aufräumen in @AfterEach. */
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -297,6 +297,65 @@ class TrainingIntegrationTest {
         assertEquals(plan, read().get("planId").asLong());
     }
 
+    // ---- Progression (KI-Log Nr. 31) ----
+
+    /** Session A: die ersten {done} Übungen „Done", die nächsten {notDone} „Not done", Rest unmarkiert. */
+    void markSessionA(int done, int notDone) throws Exception {
+        var exercises = read().get("sessions").get(0).get("exercises");
+        for (int i = 0; i < done + notDone; i++) {
+            var e = exercises.get(i);
+            mark(session, e.get("planExerciseId").asLong(), i < done,
+                    e.get("bodyweight").asBoolean() ? null : 10, 10);
+        }
+    }
+
+    /** Wochenwechsel auslösen und die Übungen der neuen Session A liefern. */
+    List<JsonNode> sessionANextWeek() throws Exception {
+        day(monday.plusWeeks(1));
+        var list = new ArrayList<JsonNode>();
+        read().get("sessions").get(0).get("exercises").forEach(list::add);
+        return list;
+    }
+
+    void setSessionAWeights(String kg) {
+        jdbc.update("UPDATE plan_uebung SET gewicht_kg = ? WHERE einheit_id = ? AND gewicht_kg IS NOT NULL",
+                new BigDecimal(kg), session);
+    }
+
+    void assertSessionAWeights(double expected) throws Exception {
+        for (var e : sessionANextWeek()) {
+            if (e.get("bodyweight").asBoolean()) assertTrue(e.get("weight").isNull());
+            else assertEquals(expected, e.get("weight").asDouble());
+            assertEquals(3, e.get("sets").asInt());
+            assertEquals("8-12", e.get("reps").asText());
+        }
+    }
+
+    @Test void fourOfFiveDoneRaisesWeightsByFivePercent() throws Exception {
+        setSessionAWeights("10.0");
+        markSessionA(4, 1);
+        assertSessionAWeights(10.5);
+        // Session B war unmarkiert: unverändert
+        assertEquals(3.5, read().get("sessions").get(1).get("exercises").get(0).get("weight").asDouble());
+    }
+
+    @Test void fiveOfFiveDoneRaisesWeightsByFivePercent() throws Exception {
+        setSessionAWeights("10.0");
+        markSessionA(5, 0);
+        assertSessionAWeights(10.5);
+    }
+
+    @Test void threeDoneAndTwoNotDoneKeepWeights() throws Exception {
+        setSessionAWeights("10.0");
+        markSessionA(3, 2);
+        assertSessionAWeights(10.0);
+    }
+
+    @Test void threeDoneAndTwoUnmarkedKeepWeights() throws Exception {
+        setSessionAWeights("10.0");
+        markSessionA(3, 0);   // unmarkiert zählt wie „Not done"
+        assertSessionAWeights(10.0);
+    }
     // ---- Parallelität ----
 
     @Test void concurrentRolloverCreatesOneSuccessor() throws Exception {

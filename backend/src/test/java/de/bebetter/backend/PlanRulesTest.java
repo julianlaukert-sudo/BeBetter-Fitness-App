@@ -15,7 +15,7 @@ import java.util.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-// KI-Log Nr. 12
+// KI-Log Nr. 12,31
 class PlanRulesTest {
 
     static Profile profile(int age, int height, String weight) {
@@ -104,5 +104,24 @@ class PlanRulesTest {
         assertEquals(3, PlanRules.sets(Goal.MUSCLE_GAIN));
         assertEquals("8-12", PlanRules.reps(Goal.MUSCLE_GAIN));
         assertEquals(2, PlanRules.sets(Goal.HEALTH));
+    }
+    // KI-Log Nr. 31
+    @Test void progressionNeedsAtLeastFourDone() {
+        assertFalse(PlanRules.progresses(0));
+        assertFalse(PlanRules.progresses(3));
+        assertTrue(PlanRules.progresses(4));
+        assertTrue(PlanRules.progresses(5));
+    }
+
+    // KI-Log Nr. 31
+    @Test void progressionAddsFivePercentRoundedToHalfKilogram() {
+        assertEquals(0, new BigDecimal("10.5").compareTo(PlanRules.progressedWeight(new BigDecimal("10.0"))));
+        assertEquals(0, new BigDecimal("8.5").compareTo(PlanRules.progressedWeight(new BigDecimal("8.0"))));
+        assertEquals(0, new BigDecimal("26.5").compareTo(PlanRules.progressedWeight(new BigDecimal("25.0"))));
+        assertEquals(0, new BigDecimal("5.5").compareTo(PlanRules.progressedWeight(new BigDecimal("5.0"))));
+        // 3,5 × 1,05 = 3,675 -> gerundet 3,5 (Variante A)
+        assertEquals(0, new BigDecimal("3.5").compareTo(PlanRules.progressedWeight(new BigDecimal("3.5"))));
+        assertEquals(0, new BigDecimal("500").compareTo(PlanRules.progressedWeight(new BigDecimal("480.0"))));
+        assertNull(PlanRules.progressedWeight(null));
     }
 }
