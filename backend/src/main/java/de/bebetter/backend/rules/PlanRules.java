@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Set;
-// KI-Log Nr. 12
+// KI-Log Nr. 12,31
 /**
  * Planregeln. Startgewichte sind technische Modellwerte,
  * keine gemessenen Kraftwerte.
@@ -18,7 +18,11 @@ public final class PlanRules {
 
     public static final List<String> BODY_PARTS =
             List.of("chest", "back", "upper legs", "shoulders", "upper arms");
-
+    // KI-Log Nr. 31: Progression im Wochenwechsel
+    /** Ab so vielen „Done" pro Einheit steigt das Gewicht in der Folgewoche. */
+    public static final int PROGRESSION_MIN_DONE = 4;
+    private static final BigDecimal PROGRESSION_FACTOR = new BigDecimal("1.05");
+    private static final BigDecimal MAX_WEIGHT = new BigDecimal("500.0");
     private PlanRules() {}
 
     /** health: 2 Sätze, sonst 3. */
@@ -68,5 +72,23 @@ public final class PlanRules {
         BigDecimal step = new BigDecimal("0.5");
         return base.multiply(bodyFactor).multiply(ageFactor)
                 .divide(step, 0, RoundingMode.FLOOR).multiply(step).max(step);
+    }
+    // KI-Log Nr. 31
+    /** true bei 4 oder 5 von 5 Übungen als „Done". */
+    public static boolean progresses(long doneCount) {
+        return doneCount >= PROGRESSION_MIN_DONE;
+    }
+
+    // KI-Log Nr. 31
+    /**
+     * Gewicht der Folgewoche: +5 %, auf 0,5 kg gerundet (kaufmännisch), höchstens 500 kg.
+     * null (Körpergewicht) bleibt null.
+     */
+    public static BigDecimal progressedWeight(BigDecimal weight) {
+        if (weight == null) return null;
+        BigDecimal step = new BigDecimal("0.5");
+        return weight.multiply(PROGRESSION_FACTOR)
+                .divide(step, 0, RoundingMode.HALF_UP).multiply(step)
+                .min(MAX_WEIGHT);
     }
 }
