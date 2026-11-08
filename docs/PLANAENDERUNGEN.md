@@ -15,3 +15,4 @@ Grundlage: BeBetter_01_Entwicklungsplan, BeBetter_03_Sprint_1_Arbeitsblatt, BeBe
 | 06.11.2026 | ExerciseDB-Katalog beim Start und vor Cache-Ablauf im Hintergrund laden | Planerstellung bei warmem Cache auch während eines API-Ausfalls ermöglichen | Team |
 | 06.11.2026 | GraphQL um myProfile und currentPlan erweitert | Lesende REST-Parität für Profil und Trainingsplan als Bewertungskriterium; Markieren und Profiländerung bleiben REST | Team |
 | 08.11.2026 | Gewichtsprogression im Wochenwechsel: 4–5 von 5 „Done" je Einheit -> +5 % (0,5-kg-Rundung) | Fortschritt soll sich im Plan auswirken; vorher keine Steigerung | Team |
+| 08.11.2026 | Markierung nur noch „Done“ per Schalter; Eingabe von Gewicht/Wiederholungen entfernt | einfachere Bedienung; Werte flossen nie in die Planung ein. DB-Spalten bleiben (keine Migration), API-Felder als veraltet | Team |

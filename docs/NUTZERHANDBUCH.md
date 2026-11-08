@@ -16,10 +16,9 @@ Die Oberfläche ist englisch; die Schaltflächen sind unten in Anführungszeiche
 - „Exercise details“ zeigt Zielmuskel, Gerät und Bild (falls verfügbar).
 - „Training target“ ist ein berechneter Startvorschlag (Modellwert, keine Kraftmessung);
   bei Kurzhanteln gilt das Gewicht pro Hand.
-- Pro Übung „Done“ oder „Not done“ wählen, tatsächliches Gewicht und Wiederholungen eintragen
-  (bei mehreren Sätzen die Werte des letzten Satzes) und „Save“ klicken.
-- Körpergewichtsübungen haben kein Gewichtsfeld. 0 Wiederholungen sind erlaubt.
-- „Correct“ ändert ein gespeichertes Ergebnis – möglich vom Trainingstag bis Sonntag.
+- Pro Übung „Done“ antippen, wenn sie geschafft ist (Häkchen). Erneutes Antippen nimmt das Häkchen weg.
+  Kein Häkchen bedeutet „nicht geschafft“. Gewicht und Wiederholungen werden nicht eingetragen.
+- Ändern ist vom Trainingstag bis Sonntag möglich.
 - Zukünftige Einheiten sind lesbar, aber gesperrt.
 - Status auf den Karten: Open, Started, Done, Not done, Partially done.
 
