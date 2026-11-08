@@ -1,5 +1,6 @@
 package de.bebetter.backend.rules;
 
+import de.bebetter.backend.domain.Gender;
 import de.bebetter.backend.domain.FitnessLevel;
 import de.bebetter.backend.domain.Goal;
 import de.bebetter.backend.domain.Profile;
@@ -7,7 +8,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Set;
-// KI-Log Nr. 12,31
+// KI-Log Nr. 12,31,33
 /**
  * Planregeln. Startgewichte sind technische Modellwerte,
  * keine gemessenen Kraftwerte.
@@ -55,10 +56,21 @@ public final class PlanRules {
         };
     }
 
+    // KI-Log Nr. 33
+    /** Geschlechtsfaktor: männlich 1,20, divers 1,10, weiblich 1,00. */
+    public static BigDecimal genderFactor(Gender gender) {
+        if (gender == null) return BigDecimal.ONE;
+        return switch (gender) {
+            case MALE -> new BigDecimal("1.20");
+            case DIVERSE -> new BigDecimal("1.10");
+            case FEMALE -> BigDecimal.ONE;
+        };
+    }
+
     /**
      * Körperdatenabhängiger Startvorschlag (wird vom PlanGenerator verwendet):
-     * Basis × Körperfaktor (BMI/25, begrenzt 0,80–1,20) × Altersfaktor (ab 60: 0,90),
-     * abgerundet auf 0,5 kg, mindestens 0,5 kg. Geschlecht hat keinen Faktor.
+     * Basis × Körperfaktor (BMI/25, begrenzt 0,80–1,20) × Altersfaktor (ab 60: 0,90)
+     * × Geschlechtsfaktor (KI-Log Nr. 33), abgerundet auf 0,5 kg, mindestens 0,5 kg.
      */
     public static BigDecimal startWeight(EquipmentCategory category, Profile profile) {
         BigDecimal base = startWeight(category, profile.getFitnessLevel());
@@ -71,6 +83,7 @@ public final class PlanRules {
         BigDecimal ageFactor = profile.getAge() >= 60 ? new BigDecimal("0.90") : BigDecimal.ONE;
         BigDecimal step = new BigDecimal("0.5");
         return base.multiply(bodyFactor).multiply(ageFactor)
+                .multiply(genderFactor(profile.getGender()))
                 .divide(step, 0, RoundingMode.FLOOR).multiply(step).max(step);
     }
     // KI-Log Nr. 31

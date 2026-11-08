@@ -75,8 +75,9 @@ public class ProfileService {
         var training = request.training();
         BigDecimal weight = personal.weight().setScale(1, RoundingMode.HALF_UP);
 
-        // Geschlecht zählt NICHT: die Startgewichtsformel hat dafür keinen Faktor
-        boolean relevantChange = !Objects.equals(profile.getAge(), personal.age())
+        // KI-Log Nr. 33: Geschlecht zählt jetzt mit (Faktor in der Startgewichtsformel)
+        boolean relevantChange = profile.getGender() != personal.gender()
+                || !Objects.equals(profile.getAge(), personal.age())
                 || !Objects.equals(profile.getHeightCm(), personal.height())
                 || profile.getWeightKg().compareTo(weight) != 0
                 || profile.getGoal() != training.goal()
