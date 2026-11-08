@@ -1,31 +1,20 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { markPayload } from './markValidation.js';
-// KI-Log Nr. 16
+// KI-Log Nr. 16, 32
 const ex = { planExerciseId: 42, bodyweight: false };
-const values = { done: 'false', weight: '3,5', reps: '0' };
 
-test('false and zero remain explicit values; decimal comma is supported', () => {
-  assert.deepEqual(markPayload(7, ex, values), {
-    sessionId: 7, planExerciseId: 42, done: false, weight: 3.5, reps: 0,
-  });
+test('done and not done are sent without weight or reps', () => {
+    assert.deepEqual(markPayload(7, ex, true), { sessionId: 7, planExerciseId: 42, done: true });
+    assert.deepEqual(markPayload(7, ex, false), { sessionId: 7, planExerciseId: 42, done: false });
 });
 
-test('missing result, blank values and fractional reps are rejected', () => {
-  for (const patch of [{ done: '' }, { reps: '' }, { weight: '' },
-    { reps: '2.5' }, { reps: '201' }, { weight: '-1' },
-    { weight: '500.1' }, { weight: '2.55' }, { weight: '1e2' }])
-    assert.throws(() => markPayload(7, ex, { ...values, ...patch }));
+test('bodyweight exercises use the same payload', () => {
+    assert.deepEqual(markPayload(7, { ...ex, bodyweight: true }, true),
+        { sessionId: 7, planExerciseId: 42, done: true });
 });
 
-test('bodyweight sends null and does not require a weight input', () => {
-  assert.equal(markPayload(7, { ...ex, bodyweight: true },
-    { ...values, weight: '' }).weight, null);
-});
-
-test('boundary values and explicit success are accepted', () => {
-  const result = markPayload(7, ex, { done: 'true', weight: '500', reps: '200' });
-  assert.equal(result.done, true);
-  assert.equal(result.weight, 500);
-  assert.equal(result.reps, 200);
+test('missing or non-boolean result is rejected', () => {
+    for (const value of [undefined, null, '', 'true', 1])
+        assert.throws(() => markPayload(7, ex, value));
 });

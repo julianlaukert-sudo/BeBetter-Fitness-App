@@ -13,7 +13,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-// KI-Log Nr. 17
+// KI-Log Nr. 17,33
 class ProfileUpdateIntegrationTest extends Sprint5Support {
 
     @Test void changedProfileKeepsCurrentPlanAndItsResult() throws Exception {
@@ -56,10 +56,11 @@ class ProfileUpdateIntegrationTest extends Sprint5Support {
         verify(api, never()).candidates(anyCollection());
     }
 
-    @Test void genderOnlyChangeDoesNotInventAWeightMultiplier() throws Exception {
+    // KI-Log Nr. 33: Geschlecht beeinflusst jetzt die Startgewichte
+    @Test void genderOnlyChangeSchedulesNewStartValues() throws Exception {
         var body = json.readTree(PlanIntegrationTest.PROFILE);
         ((ObjectNode) body.get("personal")).put("gender", "female");
-        assertTrue(update(body).get("nextPlanFrom").isNull());
+        assertEquals(monday.plusWeeks(1).toString(), update(body).get("nextPlanFrom").asText());
     }
 
     @Test void invalidProfileLeavesStoredValuesUntouched() throws Exception {

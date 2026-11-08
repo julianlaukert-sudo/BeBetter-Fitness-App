@@ -86,11 +86,12 @@ type PlanExercise {
   mark: ExerciseMark
 }
 
+# KI-Log Nr. 32: Istwerte werden nicht mehr erfasst; Felder bleiben für bestehende Abfragen
 type ExerciseMark {
   id: ID!
   date: String!
   done: Boolean!
-  weight: Float
-  reps: Int!
+  weight: Float @deprecated(reason: "Actual values are no longer recorded. Always null.")
+  reps: Int! @deprecated(reason: "Actual values are no longer recorded. Always 0.")
   automatic: Boolean!
 }

@@ -36,7 +36,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-// KI-Log Nr. 15
+// KI-Log Nr. 15, 31, 32
 /** Ohne äußere Testtransaktion: Aufrufe committen wie im Betrieb; Aufräumen in @AfterEach. */
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -110,6 +110,22 @@ class TrainingIntegrationTest {
         jdbc.update("DELETE FROM nutzer WHERE id = ?", id);
     }
 
+    JsonNode postMark(Map<String, Object> body) throws Exception {
+        return json.readTree(mvc.perform(post("/marks").header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsString(body)))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+    }
+
+    // KI-Log Nr. 32: neues Format, nur done
+    JsonNode mark(long s, long e, boolean done) throws Exception {
+        var body = new LinkedHashMap<String, Object>();
+        body.put("sessionId", s);
+        body.put("planExerciseId", e);
+        body.put("done", done);
+        return postMark(body);
+    }
+
+    // Altes Format mit weight/reps (wird vom Backend ignoriert)
     JsonNode mark(long s, long e, boolean done, Object weight, int reps) throws Exception {
         var body = new LinkedHashMap<String, Object>();
         body.put("sessionId", s);
@@ -117,9 +133,7 @@ class TrainingIntegrationTest {
         body.put("done", done);
         body.put("weight", weight);
         body.put("reps", reps);
-        return json.readTree(mvc.perform(post("/marks").header("Authorization", "Bearer " + token)
-                        .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsString(body)))
-                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+        return postMark(body);
     }
 
     JsonNode read() throws Exception {
@@ -177,14 +191,30 @@ class TrainingIntegrationTest {
         assertEquals(0, result.get("reps").asInt());
     }
 
+    // KI-Log Nr. 32: alte Clients senden weight/reps – angenommen, aber nicht gespeichert
+    @Test void legacyWeightAndRepsAreIgnored() throws Exception {
+        var result = mark(session, exercise, true, 4.0, 10);
+        assertTrue(result.get("done").asBoolean());
+        assertTrue(result.get("weight").isNull());
+        assertEquals(0, result.get("reps").asInt());
+        assertNull(jdbc.queryForObject("SELECT gewicht_kg FROM markierung WHERE plan_uebung_id = ?",
+                BigDecimal.class, exercise));
+    }
+
+    // KI-Log Nr. 32: neues Format ohne Istwerte
+    @Test void doneOnlyPayloadIsAccepted() throws Exception {
+        var result = mark(session, exercise, true);
+        assertTrue(result.get("done").asBoolean());
+        var corrected = mark(session, exercise, false);
+        assertEquals(result.get("id"), corrected.get("id"));
+        assertFalse(corrected.get("done").asBoolean());
+    }
+
     @Test void invalidOrMissingValuesDoNotWrite() throws Exception {
         for (String payload : List.of(
-                "{\"done\":true}",
-                "{\"done\":true,\"weight\":4,\"reps\":2.5}",
-                "{\"done\":true,\"weight\":2.55,\"reps\":10}",
-                "{\"done\":true,\"weight\":-1,\"reps\":10}",
-                "{\"done\":true,\"weight\":501,\"reps\":10}",
-                "{\"done\":true,\"weight\":4,\"reps\":201}",
+                "{}",
+                "{\"done\":null}",
+                "{\"done\":\"maybe\"}",
                 "{\"weight\":4,\"reps\":10}")) {
             var body = (ObjectNode) json.readTree(payload);
             body.put("sessionId", session);
@@ -212,7 +242,7 @@ class TrainingIntegrationTest {
                             .contentType(MediaType.APPLICATION_JSON).content(PlanIntegrationTest.PROFILE))
                     .andExpect(status().isOk());
             assertThrows(ApiException.class, () -> marks.save(otherId,
-                    new MarkRequest(session, exercise, true, new BigDecimal("4"), 10)));
+                    new MarkRequest(session, exercise, true)));
         } finally {
             deleteUser(otherId);
         }
@@ -249,7 +279,7 @@ class TrainingIntegrationTest {
         assertEquals(4, count(bySession + " AND m.automatisch", session));
         assertEquals(existing.get("id").asLong(), jdbc.queryForObject(
                 "SELECT id FROM markierung WHERE plan_uebung_id = ?", Long.class, exercise));
-        assertEquals(6, count("SELECT wiederholungen FROM markierung WHERE plan_uebung_id = ?", exercise));
+        assertEquals(0, count("SELECT wiederholungen FROM markierung WHERE plan_uebung_id = ?", exercise)); // KI-Log Nr. 32
         assertFalse(current.get("sessions").get(0).get("carried").asBoolean());
         assertTrue(current.get("sessions").get(1).get("carried").asBoolean());
         for (var s : current.get("sessions")) {
@@ -297,6 +327,65 @@ class TrainingIntegrationTest {
         assertEquals(plan, read().get("planId").asLong());
     }
 
+    // ---- Progression (KI-Log Nr. 31) ----
+
+    /** Session A: die ersten {done} Übungen „Done", die nächsten {notDone} „Not done", Rest unmarkiert. */
+    void markSessionA(int done, int notDone) throws Exception {
+        var exercises = read().get("sessions").get(0).get("exercises");
+        for (int i = 0; i < done + notDone; i++) {
+            var e = exercises.get(i);
+            mark(session, e.get("planExerciseId").asLong(), i < done,
+                    e.get("bodyweight").asBoolean() ? null : 10, 10);
+        }
+    }
+
+    /** Wochenwechsel auslösen und die Übungen der neuen Session A liefern. */
+    List<JsonNode> sessionANextWeek() throws Exception {
+        day(monday.plusWeeks(1));
+        var list = new ArrayList<JsonNode>();
+        read().get("sessions").get(0).get("exercises").forEach(list::add);
+        return list;
+    }
+
+    void setSessionAWeights(String kg) {
+        jdbc.update("UPDATE plan_uebung SET gewicht_kg = ? WHERE einheit_id = ? AND gewicht_kg IS NOT NULL",
+                new BigDecimal(kg), session);
+    }
+
+    void assertSessionAWeights(double expected) throws Exception {
+        for (var e : sessionANextWeek()) {
+            if (e.get("bodyweight").asBoolean()) assertTrue(e.get("weight").isNull());
+            else assertEquals(expected, e.get("weight").asDouble());
+            assertEquals(3, e.get("sets").asInt());
+            assertEquals("8-12", e.get("reps").asText());
+        }
+    }
+
+    @Test void fourOfFiveDoneRaisesWeightsByFivePercent() throws Exception {
+        setSessionAWeights("10.0");
+        markSessionA(4, 1);
+        assertSessionAWeights(10.5);
+        // Session B war unmarkiert: unverändert
+        assertEquals(3.5, read().get("sessions").get(1).get("exercises").get(0).get("weight").asDouble());
+    }
+
+    @Test void fiveOfFiveDoneRaisesWeightsByFivePercent() throws Exception {
+        setSessionAWeights("10.0");
+        markSessionA(5, 0);
+        assertSessionAWeights(10.5);
+    }
+
+    @Test void threeDoneAndTwoNotDoneKeepWeights() throws Exception {
+        setSessionAWeights("10.0");
+        markSessionA(3, 2);
+        assertSessionAWeights(10.0);
+    }
+
+    @Test void threeDoneAndTwoUnmarkedKeepWeights() throws Exception {
+        setSessionAWeights("10.0");
+        markSessionA(3, 0);   // unmarkiert zählt wie „Not done"
+        assertSessionAWeights(10.0);
+    }
     // ---- Parallelität ----
 
     @Test void concurrentRolloverCreatesOneSuccessor() throws Exception {
@@ -317,7 +406,7 @@ class TrainingIntegrationTest {
     @Test void concurrentCorrectionsProduceOneMark() throws Exception {
         var pool = Executors.newFixedThreadPool(2);
         try {
-            var r = new MarkRequest(session, exercise, false, new BigDecimal("3"), 5);
+            var r =new MarkRequest(session, exercise, false);
             var a = pool.submit(() -> marks.save(user, r).id());
             var b = pool.submit(() -> marks.save(user, r).id());
             assertEquals(a.get(20, TimeUnit.SECONDS), b.get(20, TimeUnit.SECONDS));

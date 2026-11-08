@@ -14,21 +14,21 @@ Die Oberfläche ist englisch; die Schaltflächen sind unten in Anführungszeiche
 ## Training
 - Drei Einheiten (Session A, B, C) mit je fünf Übungen.
 - „Exercise details“ zeigt Zielmuskel, Gerät und Bild (falls verfügbar).
-- „Training target“ ist ein berechneter Startvorschlag (Modellwert, keine Kraftmessung);
+- „Training target“ ist ein berechneter Startvorschlag aus Fitnesslevel, Körperdaten, Alter und Geschlecht(Modellwert, keine Kraftmessung);
   bei Kurzhanteln gilt das Gewicht pro Hand.
-- Pro Übung „Done“ oder „Not done“ wählen, tatsächliches Gewicht und Wiederholungen eintragen
-  (bei mehreren Sätzen die Werte des letzten Satzes) und „Save“ klicken.
-- Körpergewichtsübungen haben kein Gewichtsfeld. 0 Wiederholungen sind erlaubt.
-- „Correct“ ändert ein gespeichertes Ergebnis – möglich vom Trainingstag bis Sonntag.
+- Pro Übung „Done“ antippen, wenn sie geschafft ist (Häkchen). Erneutes Antippen nimmt das Häkchen weg.
+  Kein Häkchen bedeutet „nicht geschafft“. Gewicht und Wiederholungen werden nicht eingetragen.
+- Ändern ist vom Trainingstag bis Sonntag möglich.
 - Zukünftige Einheiten sind lesbar, aber gesperrt.
 - Status auf den Karten: Open, Started, Done, Not done, Partially done.
 
 ## Neue Woche
-- Ab Montag entsteht automatisch eine neue Woche mit denselben Vorgaben.
+- Ab Montag entsteht automatisch eine neue Woche mit denselben Übungen.
+- Wer in einer Einheit mindestens 4 von 5 Übungen als „Done" markiert, bekommt dort in der neuen Woche 5 % mehr Gewicht (auf 0,5 kg gerundet). Sonst bleiben die Vorgaben gleich.
 - Nur offene Übungen teilweise markierter Einheiten werden automatisch „nicht geschafft“.
 - Ganz unmarkierte Einheiten erscheinen als „Carried over …“.
 - Nach einer Pause holt „Refresh plan“ fehlende Wochen nach.
-- Kein Kalender, keine automatische Gewichtssteigerung.
+- Kein Kalender.
 
 ## Profil bearbeiten („My profile“)
 - Aktuelle Werte sind vorbelegt; Änderungen mit dem Häkchen bestätigen und „Save changes“.

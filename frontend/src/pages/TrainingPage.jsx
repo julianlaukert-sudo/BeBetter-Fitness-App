@@ -66,9 +66,10 @@ export default function TrainingPage() {
               <ul>
                 <li>You train three sessions per week on your training days, with five exercises each.</li>
                 <li>Sets and repetitions depend on your goal: 2 sets for Health, otherwise 3 sets; 8–12 repetitions for Muscle gain, otherwise 12–15.</li>
-                <li>Training targets are calculated from your fitness level, body data and age. Dumbbell weights are per hand.</li>
-                <li>You can record and correct results from the training day until Sunday. Future sessions can be viewed but not edited yet.</li>
-                <li>Each new week keeps the same targets. There is no automatic increase.</li>
+                <li>Training targets are calculated from your fitness level, body data, gender and age. Dumbbell weights are per hand.</li>
+                  {/* KI-Log Nr. 32 */}
+                  <li>Tick an exercise as done from the training day until Sunday; tick it again to undo. Future sessions can be viewed but not edited yet.</li>
+                  <li>If you mark at least 4 of 5 exercises of a session as done, its weights increase by 5% next week (rounded to 0.5 kg). Otherwise the targets stay the same.</li>
                 <li>At the end of a week, open exercises of partially recorded sessions count as not done. Sessions without any results are carried over.</li>
                 <li>Changes to your profile apply from the next Monday.</li>
               </ul>

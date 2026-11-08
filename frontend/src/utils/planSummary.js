@@ -152,13 +152,10 @@ export function statusLabel(status) {
     : 'Status unknown';
 }
 
-// KI-Log Nr. 27
-// Ergebnistext einer Übung (bisher markText in ExerciseRow) mit Schlüssel für die Anzeige
+// KI-Log Nr. 27, 32
+// Ergebnistext einer Übung (ohne Istwerte, nur geschafft / nicht geschafft)
 export function markSummary(mark) {
-  if (!mark) return { key: 'none', text: 'Not marked yet' };
-  if (mark.automatic) return { key: 'automatic', text: 'Automatically not done; no measured values.' };
-  return {
-    key: mark.done ? 'done' : 'failed',
-    text: `${mark.done ? 'Done' : 'Not done'}: ${mark.reps} reps` + (mark.weight == null ? '' : `, ${mark.weight} kg`),
-  };
+    if (!mark) return { key: 'none', text: 'Not marked yet' };
+    if (mark.automatic) return { key: 'automatic', text: 'Automatically not done' };
+    return mark.done ? { key: 'done', text: 'Done' } : { key: 'failed', text: 'Not done' };
 }

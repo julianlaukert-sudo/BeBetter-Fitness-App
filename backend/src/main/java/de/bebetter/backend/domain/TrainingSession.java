@@ -64,6 +64,13 @@ public class TrainingSession {
         return exercises.stream().filter(e -> e.getMark() != null).count();
     }
 
+    // KI-Log Nr. 31: nur ausdrücklich „Done" zählt; nicht markiert = nicht geschafft
+    public long doneCount() {
+        return exercises.stream()
+                .filter(e -> e.getMark() != null && e.getMark().isDone())
+                .count();
+    }
+
     public boolean isCarried() { return carried; }
     public void setCarried(boolean carried) { this.carried = carried; }
 

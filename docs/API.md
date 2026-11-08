@@ -164,37 +164,48 @@ Wiederholte Aufrufe derselben Woche liefern dieselbe planId.
 ## Sprint 4 – Markierungen
 
 ### POST /marks  (Token nötig, nur Rolle USER)
+
 ```json
-{"sessionId":101,"planExerciseId":501,"done":false,"weight":3.5,"reps":6}
+{"sessionId":101,"planExerciseId":501,"done":true}
 ```
-Regeln: done Pflicht (true/false), reps 0–200 ganze Zahl, weight 0–500 mit max. 1 Nachkommastelle,
-bei Gewichtsübungen Pflicht, bei Körpergewicht wird null gespeichert.
+
+Regeln (KI-Log Nr. 32): done Pflicht (true/false). Gewicht und Wiederholungen werden nicht mehr erfasst;
+von älteren Clients mitgeschickte weight/reps werden ignoriert.
 Bearbeitbar vom Trainingstag bis Sonntag dieser Woche (Backenddatum Europe/Berlin).
 Korrektur derselben Planübung behält die id.
-- 200: `{"id":1,"date":"2026-10-23","done":false,"weight":3.5,"reps":6,"automatic":false}`
+- 200: `{"id":1,"date":"2026-10-23","done":true,"weight":null,"reps":0,"automatic":false}`
+  (weight/reps bleiben aus Kompatibilitätsgründen im Format, sind immer null bzw. 0)
 - 400: `Invalid training values.`, `Invalid input.`, `Exercise not found.`, `Session is not editable.`,
   `Profile not found.`, `Token is wrong.`, `Access denied.`
 
 ### GET /plans/current – Ergänzung
+
 Session zusätzlich: `status` (OPEN|IN_PROGRESS|DONE|FAILED|PARTIAL), `available`, `carried`.
 Exercise zusätzlich: `mark` (wie Antwort von POST /marks) oder null.
-weight/reps der Übung bleiben die Vorgaben; mark.weight/mark.reps sind die Istwerte.
+weight/reps der Übung sind die Vorgaben; mark enthält nur done (mark.weight/mark.reps veraltet, null bzw. 0).
 
-### Wochenwechsel 
+### Wochenwechsel
+
 GET /plans/current und POST /plans schließen zuerst veraltete Wochen ab und kopieren sie:
 - teilweise markierte Einheiten: offene Übungen -> automatisch nicht geschafft
   (automatic=true, reps=0, weight=null, Datum = Sonntag der alten Woche)
 - ganz unmarkierte Einheiten: keine Fehlmarkierungen, Kopie mit carried=true
-- Kopie: gleiche Vorgaben, neue IDs, keine Markierungen, keine Gewichtsanpassung
+- Kopie: gleiche Übungen, Sätze und Wiederholungen, neue IDs, keine Markierungen
+- Progression (KI-Log Nr. 31): hat eine Einheit 4 oder 5 von 5 Übungen mit done=true,
+  steigt das Gewicht jeder Übung dieser Einheit um 5 % (auf 0,5 kg gerundet, max. 500 kg);
+  Körpergewicht bleibt null. Bei 3 oder weniger done=true unverändert.
+  Unmarkiert und done=false (auch automatisch) zählen gleich. Nach fälliger Neuplanung keine Progression.
   Zusätzlich läuft montags 00:05 (Europe/Berlin) ein Job, solange das Backend läuft.
 
 ## Sprint 5 – Profil bearbeiten
 
 ### PUT /profile  (Token nötig, nur Rolle USER)
+
 Gleicher Body und gleiche Regeln wie POST /profile. Holt vorher verpasste Wochen mit dem alten Profil nach.
 Speichert sofort; die aktuelle Woche bleibt unverändert.
-Relevante Änderungen (Alter, Größe, Gewicht, Ziel, Level, Trainingstage) -> neuer Plan ab nächstem Montag.
-Nur Geschlecht oder gleiche Werte -> keine Neuplanung. Ohne bisherigen Plan -> keine Vormerkung.
+Relevante Änderungen (Alter, Geschlecht, Größe, Gewicht, Ziel, Level, Trainingstage) -> neuer Plan ab nächstem Montag.
+Gleiche Werte -> keine Neuplanung. Ohne bisherigen Plan -> keine Vormerkung.
+Startgewicht (KI-Log Nr. 33): zusätzlich × Geschlechtsfaktor (male 1,2 · diverse 1,1 · female 1,0).
 - 200: ProfileResponse inkl. `nextPlanFrom` (Datum oder null)
 - 400: `Invalid input.` + errors, `Profile not found.`, `Access denied.`, `Token is wrong.`
   GET/POST /profile liefern ebenfalls `nextPlanFrom`.
@@ -202,12 +213,14 @@ Nur Geschlecht oder gleiche Werte -> keine Neuplanung. Ohne bisherigen Plan -> k
 ### Administration
 
 ### Admin-JSON (Bearer-Token mit Rolle ADMIN)
+
 - GET /admin/users -> [{userId, name, email, registeredAt, role}]
 - GET /admin/stats -> {users, plans, marksLastSevenDays}
 - DELETE /admin/users/{id} -> {"message":"User deleted.","userId":...}
 - 400: `User not found.`, `Admin cannot be deleted.`, `Access denied.`, `Token is wrong.`
 
 ### Adminseiten (MPA, Thymeleaf, Session + CSRF)
+
 - POST /admin/sso (Formularfeld `token`, Origin muss FRONTEND_URL sein) -> neue Session, Redirect /admin/overview
 - GET /admin/overview, GET /admin/accounts
 - GET /admin/accounts/{id}/delete (nur Bestätigung), POST /admin/accounts/{id}/delete (löscht, CSRF)
@@ -313,6 +326,8 @@ query {
   }
 }
 ```
+
+`ExerciseMark.weight` und `ExerciseMark.reps` sind seit KI-Log Nr. 32 `@deprecated` (immer null bzw. 0)
 
 Bei `myProfile` und `currentPlan` wird keine Nutzer-ID als Argument übergeben. Die Identität des Nutzers wird ausschließlich aus dem JWT des Bearer-Tokens ermittelt. Dadurch kann ein Nutzer über diese persönlichen Queries nur auf seine eigenen Daten zugreifen.
 

@@ -95,31 +95,54 @@ class PlanIntegrationTest {
 
     // ---- Tests ----
 
-    @Test void threeSessionsFiveExercisesAndPersistentModelValues() throws Exception {
+    @Test
+    void threeSessionsFiveExercisesAndPersistentModelValues() throws Exception {
         var a = account(true);
         create(a);
         var p = read(a);
+
         assertEquals(3, p.get("sessions").size());
+
         var ids = new HashSet<String>();
-        LocalDate monday = PlanGenerator.mondayOf(LocalDate.now(ZoneId.of("Europe/Berlin")));
+        LocalDate monday = PlanGenerator.mondayOf(
+                LocalDate.now(ZoneId.of("Europe/Berlin"))
+        );
+
         for (int i = 0; i < 3; i++) {
             var s = p.get("sessions").get(i);
+
             assertEquals(5, s.get("exercises").size());
-            assertEquals(monday.plusDays(i * 2).toString(), s.get("date").asText()); // MON/WED/FRI
+            assertEquals(
+                    monday.plusDays(i * 2).toString(),
+                    s.get("date").asText()
+            ); // MON/WED/FRI
+
             for (var e : s.get("exercises")) {
                 assertTrue(ids.add(e.get("exerciseId").asText()));
                 assertEquals(2, e.get("sets").asInt());
-                if (e.get("equipment").asText().equals("dumbbell"))
-                    assertEquals(3.5, e.get("weight").asDouble());
-                if (e.get("bodyweight").asBoolean()) assertTrue(e.get("weight").isNull());
+
+                if (e.get("equipment").asText().equals("dumbbell")) {
+                    assertEquals(4.5, e.get("weight").asDouble()); // männlich × 1,2
+                }
+
+                if (e.get("bodyweight").asBoolean()) {
+                    assertTrue(e.get("weight").isNull());
+                }
             }
         }
+
         assertEquals(15, ids.size());
+
         // Übungsnamen/Bilder werden NICHT in der Datenbank gespeichert
-        List<String> columns = jdbc.queryForList("SELECT column_name FROM information_schema.columns "
-                + "WHERE table_name = 'plan_uebung'", String.class);
+        List<String> columns = jdbc.queryForList(
+                "SELECT column_name FROM information_schema.columns "
+                        + "WHERE table_name = 'plan_uebung'",
+                String.class
+        );
+
         assertFalse(columns.contains("name"));
         assertFalse(columns.contains("gif_url"));
+
         mvc.perform(get("/profile").header("Authorization", "Bearer " + a.token()))
                 .andExpect(jsonPath("$.planExists").value(true));
     }
