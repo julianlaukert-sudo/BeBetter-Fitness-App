@@ -78,6 +78,6 @@ Admin-Session und Logout-Sperrliste liegen im Backendprozess (nach Neustart neu 
 [API](docs/API.md) · [Setup](docs/SETUP.md) · [Nutzerhandbuch](docs/NUTZERHANDBUCH.md) · 
 [Sprint-6-Abnahme](docs/SPRINT-6-abnahme.md) · 
 [Deployment und App-Adressen](docs/DEPLOYMENT.md) · [Release](docs/RELEASE.md) · 
-[Release-Protokoll](docs/RELEASE-PROTOKOLL.md)
+[Release-Protokoll](docs/RELEASE-PROTOKOLL.md) [docs/KI-LOG.md](docs/KI-LOG.md)
 
 Secrets, Tokens, Passwörter und Datenbankadressen werden nie committed.
