@@ -14,7 +14,7 @@ public record PlanResponse(Long planId, LocalDate weekStart, LocalDate weekEnd,
                           String status, boolean available, boolean carried,
                           List<Exercise> exercises) {}
 
-    // weight/reps = Trainingsvorgaben; mark.weight/mark.reps = erfasste Istwerte
+    // weight/reps = Trainingsvorgaben; mark enthält nur noch done (KI-Log Nr. 32)
     public record Exercise(Long planExerciseId, String exerciseId, String name, String bodyPart,
                            String targetMuscle, String equipment, String imageUrl,
                            int sets, String reps, BigDecimal weight, boolean bodyweight,
